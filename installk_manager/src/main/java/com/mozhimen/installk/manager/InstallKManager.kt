@@ -54,11 +54,7 @@ object InstallKManager : BaseUtilK() {
      */
     @JvmStatic
     fun hasPackageNameAndSatisfyVersion(packageName: String, versionCode: Int): Boolean =
-        _installedPackageInfos.containsBy { exist -> packageName == exist.packageName && versionCode <= UtilKPackageInfo.getVersionCode(exist) }
-
-    @JvmStatic
-    fun getByPackageName(packageName: String): PackageInfo? =
-        _installedPackageInfos.find { it.packageName == packageName }
+        _installedPackageInfos.containsBy { existPackageInfo -> packageName == existPackageInfo.packageName && versionCode <= UtilKPackageInfo.getVersionCode(existPackageInfo) }
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -66,7 +62,7 @@ object InstallKManager : BaseUtilK() {
      * 应用安装的时候调用
      */
     @JvmStatic
-    fun onPackageAdded(packageName: String) {
+    fun addPackage(packageName: String) {
         Log.d(TAG, "onPackageAdded: packageName $packageName")
         if (hasPackageName(packageName)) {
             Log.d(TAG, "onPackageAdded: already has package")
@@ -82,7 +78,7 @@ object InstallKManager : BaseUtilK() {
      * 应用卸载的时候调用
      */
     @JvmStatic
-    fun onPackageRemoved(packageName: String) {
+    fun removePackage(packageName: String) {
         Log.d(TAG, "onPackageRemoved: packageName $packageName")
         if (!hasPackageName(packageName)) {
             Log.d(TAG, "onPackageRemoved: already remove package")
