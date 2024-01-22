@@ -21,7 +21,11 @@ dependencyResolutionManagement {
 rootProject.name = "AInstallKit"
 include ':app'
 include ':installk_manager'
+include ':installk_builder'
+include ':installk_builder_test'
 //SwiftKit
 include ':SwiftKit'
 project(':SwiftKit').projectDir = new File("C:\\Users\\${System.getenv().get("USERNAME")}\\Documents\\GitHub\\SwiftKit")
 include ':SwiftKit:basick'
+include ':SwiftKit:uicorek'
+
