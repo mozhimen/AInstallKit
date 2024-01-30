@@ -13,6 +13,7 @@ import com.mozhimen.basick.lintk.optin.OptInApiInit_InApplication
 import com.mozhimen.basick.manifestk.annors.AManifestKRequire
 import com.mozhimen.basick.manifestk.cons.CPermission
 import com.mozhimen.basick.taskk.temps.TaskKPollInfinite
+import com.mozhimen.basick.utilk.android.content.UtilKPackage
 import com.mozhimen.basick.utilk.android.content.UtilKPackageInfo
 import com.mozhimen.basick.utilk.android.content.UtilKPackageManager
 import com.mozhimen.basick.utilk.bases.BaseUtilK
@@ -51,7 +52,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
     fun init(context: Context) {
 //        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (_installedPackageInfos.isEmpty()) {
-            _installedPackageInfos.addAll(UtilKPackageManager.getInstalledPackages(context, false).also {
+            _installedPackageInfos.addAll(UtilKPackage.getInstalledPackages(context, false).also {
                 Log.d(TAG, "init: _installedPackageInfos packages ${it.map { packageInfo -> packageInfo.packageName }}")
             })
         }
