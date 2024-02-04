@@ -3,24 +3,16 @@ package com.mozhimen.installk.manager
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ProcessLifecycleOwner
-import com.mozhimen.basick.lintk.optin.OptInApiCall_BindLifecycle
-import com.mozhimen.basick.lintk.optin.OptInApiInit_ByLazy
-import com.mozhimen.basick.lintk.optin.OptInApiInit_InApplication
+import com.mozhimen.basick.lintk.optins.OApiCall_BindLifecycle
+import com.mozhimen.basick.lintk.optins.OApiInit_ByLazy
+import com.mozhimen.basick.lintk.optins.OApiInit_InApplication
 import com.mozhimen.basick.manifestk.annors.AManifestKRequire
 import com.mozhimen.basick.manifestk.cons.CPermission
-import com.mozhimen.basick.taskk.temps.TaskKPollInfinite
 import com.mozhimen.basick.utilk.android.content.UtilKPackage
 import com.mozhimen.basick.utilk.android.content.UtilKPackageInfo
-import com.mozhimen.basick.utilk.android.content.UtilKPackageManager
 import com.mozhimen.basick.utilk.bases.BaseUtilK
 import com.mozhimen.basick.utilk.kotlin.collections.containsBy
-import com.mozhimen.basick.utilk.kotlin.collections.joinT2listIgnoreRepeat
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
-import java.util.LinkedList
 
 /**
  * @ClassName InstallKManager
@@ -29,7 +21,7 @@ import java.util.LinkedList
  * @Date 2023/12/30 17:14
  * @Version 1.0
  */
-@OptInApiInit_InApplication
+@OApiInit_InApplication
 @AManifestKRequire(CPermission.QUERY_ALL_PACKAGES)
 object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
@@ -48,7 +40,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
     /////////////////////////////////////////////////////////////////////////
 
-    @OptIn(OptInApiCall_BindLifecycle::class, OptInApiInit_ByLazy::class)
+    @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
     fun init(context: Context) {
 //        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (_installedPackageInfos.isEmpty()) {
