@@ -3,11 +3,8 @@ package com.mozhimen.installk.manager
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
-import com.mozhimen.basick.lintk.optins.OApiCall_BindLifecycle
-import com.mozhimen.basick.lintk.optins.OApiInit_ByLazy
 import com.mozhimen.basick.lintk.optins.OApiInit_InApplication
-import com.mozhimen.basick.manifestk.annors.AManifestKRequire
-import com.mozhimen.basick.manifestk.cons.CPermission
+import com.mozhimen.basick.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
 import com.mozhimen.basick.utilk.android.content.UtilKPackage
 import com.mozhimen.basick.utilk.android.content.UtilKPackageInfo
 import com.mozhimen.basick.utilk.bases.BaseUtilK
@@ -22,7 +19,6 @@ import com.mozhimen.installk.manager.commons.IPackagesChangeListener
  * @Version 1.0
  */
 @OApiInit_InApplication
-@AManifestKRequire(CPermission.QUERY_ALL_PACKAGES)
 object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
     private val _installedPackageInfos = mutableListOf<PackageInfo>()//用来保存包的信息
@@ -40,7 +36,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
     /////////////////////////////////////////////////////////////////////////
 
-    @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
+    @OptIn(OPermission_QUERY_ALL_PACKAGES::class)
     fun init(context: Context) {
 //        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (_installedPackageInfos.isEmpty()) {
