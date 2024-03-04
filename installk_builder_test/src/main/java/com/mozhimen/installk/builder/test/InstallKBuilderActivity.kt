@@ -3,7 +3,7 @@ package com.mozhimen.installk.builder.test
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import com.mozhimen.basick.elemk.androidx.appcompat.bases.databinding.BaseActivityVB
+import com.mozhimen.basick.elemk.androidx.appcompat.bases.databinding.BaseActivityVDB
 import com.mozhimen.basick.lintk.optin.OptInDeviceRoot
 import com.mozhimen.basick.manifestk.annors.AManifestKRequire
 import com.mozhimen.basick.manifestk.cons.CManifest
@@ -51,15 +51,15 @@ import kotlinx.coroutines.launch
     CPermission.INTERNET,
     CPermission.READ_INSTALL_SESSIONS,
 )
-class InstallKBuilderActivity : BaseActivityVB<ActivityInstallkBinding>() {
+class InstallKBuilderActivity : BaseActivityVDB<ActivityInstallkBinding>() {
     private val _strPathNameApk by lazy { UtilKStrPath.Absolute.Internal.getFiles() + "/installk/componentktest.apk" }
     @OptIn(OptInDeviceRoot::class)
     private val _installK by lazy { InstallKBuilder() }
 
     @OptIn(OptInDeviceRoot::class)
     override fun initView(savedInstanceState: Bundle?) {
-        vb.installkTxt.text = UtilKPackage.getVersionCode().toString()
-        vb.installkBtn.setOnClickListener {
+        vdb.installkTxt.text = UtilKPackage.getVersionCode().toString()
+        vdb.installkBtn.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 if (!UtilKStrFile.isFileExist(_strPathNameApk)) {
                     UtilKStrAsset.strAssetName2file("componentktest.apk", _strPathNameApk, false)
