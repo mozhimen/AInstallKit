@@ -14,7 +14,7 @@ import com.mozhimen.basick.utilk.android.content.UtilKApplicationInfo
 import com.mozhimen.basick.utilk.android.os.UtilKOSRoot
 import com.mozhimen.basick.utilk.android.app.UtilKPermission
 import com.mozhimen.basick.utilk.android.os.UtilKBuildVersion
-import com.mozhimen.basick.utilk.android.util.et
+import com.mozhimen.basick.utilk.android.util.e
 import com.mozhimen.basick.utilk.kotlin.isFileExist
 import com.mozhimen.installk.builder.commons.IInstallKBuilder
 import com.mozhimen.installk.builder.commons.IInstallKStateListener
@@ -112,7 +112,7 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e(TAG, "install: ${e.message}")
-                e.message?.et(TAG)
+                e.message?.e(TAG)
                 _handler.sendMessage(Message().apply {
                     what = CInstallKCons.MSG_INSTALL_FAIL
                     obj = e.message ?: ""
