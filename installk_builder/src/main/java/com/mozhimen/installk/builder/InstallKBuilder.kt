@@ -3,19 +3,19 @@ package com.mozhimen.installk.builder
 import android.os.*
 import android.util.Log
 import com.mozhimen.basick.elemk.android.os.cons.CVersCode
-import com.mozhimen.basick.lintk.optin.OptInDeviceRoot
-import com.mozhimen.basick.manifestk.annors.AManifestKRequire
-import com.mozhimen.basick.manifestk.cons.CManifest
-import com.mozhimen.basick.manifestk.cons.CPermission
-import com.mozhimen.basick.utilk.android.content.UtilKApp
-import com.mozhimen.basick.utilk.android.content.UtilKAppInstall
+import com.mozhimen.basick.lintk.optins.ODeviceRoot
+import com.mozhimen.basick.lintk.optins.permission.OPermission_INSTALL_PACKAGES
+import com.mozhimen.basick.lintk.optins.permission.OPermission_READ_EXTERNAL_STORAGE
+import com.mozhimen.basick.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
 import com.mozhimen.basick.utilk.bases.BaseUtilK
 import com.mozhimen.basick.utilk.android.content.UtilKApplicationInfo
-import com.mozhimen.basick.utilk.android.os.UtilKOSRoot
-import com.mozhimen.basick.utilk.android.app.UtilKPermission
 import com.mozhimen.basick.utilk.android.os.UtilKBuildVersion
 import com.mozhimen.basick.utilk.android.util.e
 import com.mozhimen.basick.utilk.kotlin.isFileExist
+import com.mozhimen.basick.utilk.wrapper.UtilKApp
+import com.mozhimen.basick.utilk.wrapper.UtilKAppInstall
+import com.mozhimen.basick.utilk.wrapper.UtilKPermission
+import com.mozhimen.basick.utilk.wrapper.UtilKSys
 import com.mozhimen.installk.builder.commons.IInstallKBuilder
 import com.mozhimen.installk.builder.commons.IInstallKStateListener
 import com.mozhimen.installk.builder.cons.CInstallKCons
@@ -32,16 +32,7 @@ import java.io.*
  * @Date 2023/1/7 0:04
  * @Version 1.0
  */
-@OptInDeviceRoot
-@AManifestKRequire(
-    CPermission.READ_EXTERNAL_STORAGE,
-    CPermission.REQUEST_INSTALL_PACKAGES,
-    CPermission.INSTALL_PACKAGES,
-    CPermission.READ_INSTALL_SESSIONS,
-    CPermission.REPLACE_EXISTING_PACKAGE,
-    CPermission.BIND_ACCESSIBILITY_SERVICE,
-    CManifest.SERVICE_ACCESSIBILITY
-)
+@ODeviceRoot
 class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
 
     private var _installMode = EInstallKMode.AUTO
@@ -123,11 +114,12 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
         }
     }
 
+    @OptIn(OPermission_READ_EXTERNAL_STORAGE::class, OPermission_REQUEST_INSTALL_PACKAGES::class, OPermission_INSTALL_PACKAGES::class)
     @Throws(Exception::class)
     private fun installByMode(strPathNameApk: String) {
         require(strPathNameApk.isNotEmpty() && strPathNameApk.endsWith(".apk")) { "$TAG $strPathNameApk not a correct apk file path" }
         require(strPathNameApk.isFileExist()) { "$TAG $strPathNameApk is not exist" }
-        if (!UtilKPermission.hasPermissions(CInstallKCons.PERMISSIONS)) {
+        if (!UtilKPermission.isSelfGranted(CInstallKCons.PERMISSIONS)) {
             Log.w(TAG, "installByMode: onNeedPermissions PERMISSIONS")
             _handler.sendMessage(Message().apply {
                 what = CInstallKCons.MSG_NEED_PERMISSION
@@ -135,9 +127,8 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
             })
             return
         }
-        val targetSdkVersion = UtilKApplicationInfo.getTargetSdkVersion(_context)
-        requireNotNull(targetSdkVersion)
-        if (targetSdkVersion >= CVersCode.V_26_8_O && UtilKBuildVersion.isAfterV_26_8_O() && !UtilKAppInstall.hasPackageInstalls()) {        // 允许安装应用
+        val targetSdkVersion = UtilKApplicationInfo.getTargetSdkVersion_ofCxt(_context)
+        if (targetSdkVersion >= CVersCode.V_26_8_O && UtilKBuildVersion.isAfterV_26_8_O() && !UtilKAppInstall.hasRequestInstallPackages()) {        // 允许安装应用
             Log.w(TAG, "installByMode: onNeedPermissions isAppInstallsPermissionEnable false")
             _handler.sendMessage(Message().apply {
                 what = CInstallKCons.MSG_NEED_PERMISSION
@@ -149,36 +140,36 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
         when (_installMode) {
             EInstallKMode.AUTO -> {
                 //try install root
-                if (UtilKOSRoot.isRoot() && UtilKAppInstall.installRoot(strPathNameApk)) {
+                if (UtilKSys.isRoot() && UtilKAppInstall.install_ofRuntime(strPathNameApk)) {
                     Log.d(TAG, "installByMode: AUTO as ROOT success")
                     return
                 }
                 //try install silence
-                if (_silenceReceiverClazz != null && (UtilKOSRoot.isRoot() || !UtilKApp.isUserApp(_context))) {
-                    UtilKAppInstall.installSilence(strPathNameApk, _silenceReceiverClazz!!)
+                if (_silenceReceiverClazz != null && (UtilKSys.isRoot() || !UtilKApp.isUserApp(_context))) {
+                    UtilKAppInstall.install_ofSilence(strPathNameApk, _silenceReceiverClazz!!)
                     Log.d(TAG, "installByMode: AUTO as SILENCE success")
                     return
                 }
                 //try install smart
                 if (_smartServiceClazz != null && UtilKPermission.hasAccessibility(_smartServiceClazz!!)) {
-                    UtilKAppInstall.installHand(strPathNameApk)
+                    UtilKAppInstall.install_ofView(strPathNameApk)
                     Log.d(TAG, "installByMode: AUTO as SMART success")
                     return
                 }
                 //try install hand
-                UtilKAppInstall.installHand(strPathNameApk)
+                UtilKAppInstall.install_ofView(strPathNameApk)
             }
 
             EInstallKMode.ROOT -> {
-                require(UtilKOSRoot.isRoot()) { "$TAG this device has not root" }
-                UtilKAppInstall.installRoot(strPathNameApk)
+                require(UtilKSys.isRoot()) { "$TAG this device has not root" }
+                UtilKAppInstall.install_ofRuntime(strPathNameApk)
                 Log.d(TAG, "installByMode: ROOT success")
             }
 
             EInstallKMode.SILENCE -> {
                 requireNotNull(_silenceReceiverClazz) { "$TAG silence receiver must not be null" }
-                require(UtilKOSRoot.isRoot() || !UtilKApp.isUserApp(_context)) { "$TAG this device has not root or its system app" }
-                UtilKAppInstall.installSilence(strPathNameApk, _silenceReceiverClazz!!)
+                require(UtilKSys.isRoot() || !UtilKApp.isUserApp(_context)) { "$TAG this device has not root or its system app" }
+                UtilKAppInstall.install_ofSilence(strPathNameApk, _silenceReceiverClazz!!)
                 Log.d(TAG, "installByMode: SILENCE success")
             }
 
@@ -192,12 +183,12 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
                     })
                     return
                 }
-                UtilKAppInstall.installHand(strPathNameApk)
+                UtilKAppInstall.install_ofView(strPathNameApk)
                 Log.d(TAG, "installByMode: SMART success")
             }
 
             EInstallKMode.HAND -> {
-                UtilKAppInstall.installHand(strPathNameApk)
+                UtilKAppInstall.install_ofView(strPathNameApk)
                 Log.d(TAG, "installByMode: HAND success")
             }
         }

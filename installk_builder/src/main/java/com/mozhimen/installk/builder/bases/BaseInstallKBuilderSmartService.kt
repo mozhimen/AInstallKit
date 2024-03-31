@@ -6,8 +6,6 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import com.mozhimen.basick.elemk.android.os.cons.CVersCode
-import com.mozhimen.basick.manifestk.annors.AManifestKRequire
-import com.mozhimen.basick.manifestk.cons.CPermission
 import com.mozhimen.basick.utilk.commons.IUtilK
 
 /**
@@ -34,7 +32,6 @@ android:resource="@xml/installk_smart_accessibility_service_config" />
  * @Date 2023/1/4 22:39
  * @Version 1.0
  */
-@AManifestKRequire(CPermission.BIND_ACCESSIBILITY_SERVICE)
 @RequiresApi(CVersCode.V_16_41_J)
 open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
 //    private var _handledMap: MutableMap<Int, Boolean?> = HashMap()
