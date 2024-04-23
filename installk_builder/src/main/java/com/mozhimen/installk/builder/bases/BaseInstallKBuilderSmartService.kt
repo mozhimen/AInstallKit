@@ -2,6 +2,7 @@ package com.mozhimen.installk.builder.bases
 
 import android.accessibilityservice.AccessibilityService
 import android.util.Log
+import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
@@ -44,7 +45,7 @@ open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
         if (nodeInfo != null) {
             val eventType = event.eventType
             if (eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                Log.d(TAG, "onAccessibilityEvent: nodeInfo packageName ${nodeInfo.packageName} clazzName ${nodeInfo.className}")
+                UtilKLogWrapper.d(TAG, "onAccessibilityEvent: nodeInfo packageName ${nodeInfo.packageName} clazzName ${nodeInfo.className}")
                 iterateNodesAndHandle(nodeInfo)
             }
         } else {
@@ -68,7 +69,7 @@ open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
                 "com.google.android.material.textview.MaterialTextView" == nodeInfo.className
             ) {
                 val nodeContent = nodeInfo.text?.toString() ?: ""
-                Log.v(TAG, "iterateNodesAndHandle button content $nodeContent")
+                UtilKLogWrapper.v(TAG, "iterateNodesAndHandle button content $nodeContent")
                 if (nodeContent.isNotEmpty() && nodeContent.length <= 4 && (
                             "更新" == nodeContent || "设置" == nodeContent ||//SAMSUNG
                                     "继续" == nodeContent || "继续更新" == nodeContent ||//XIAOMI
@@ -88,11 +89,11 @@ open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
                                 "com.google.android.material.button.MaterialButton" == nodeInfo.className)
                     ) {
                         if (nodeInfo.isEnabled && nodeInfo.isClickable) {
-                            Log.v(TAG, "iterateNodesAndHandle button ${nodeInfo.text} click")
+                            UtilKLogWrapper.v(TAG, "iterateNodesAndHandle button ${nodeInfo.text} click")
                             nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                             return true
                         } else {
-                            Log.v(TAG, "iterateNodesAndHandle button click disable")
+                            UtilKLogWrapper.v(TAG, "iterateNodesAndHandle button click disable")
                         }
                     } else if (
                         "android.widget.TextView" == nodeInfo.className ||
@@ -100,17 +101,17 @@ open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
                         "com.google.android.material.textview.MaterialTextView" == nodeInfo.className
                     ) {
                         if (nodeInfo.isEnabled && nodeInfo.isClickable) {
-                            Log.v(TAG, "iterateNodesAndHandle textview ${nodeInfo.text} click")
+                            UtilKLogWrapper.v(TAG, "iterateNodesAndHandle textview ${nodeInfo.text} click")
                             nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                             return true
                         } else {
-                            Log.v(TAG, "iterateNodesAndHandle textview click disable")
+                            UtilKLogWrapper.v(TAG, "iterateNodesAndHandle textview click disable")
                             if (nodeInfo.parent != null) {
-                                Log.v(TAG, "iterateNodesAndHandle textview parent ${nodeInfo.text} click")
+                                UtilKLogWrapper.v(TAG, "iterateNodesAndHandle textview parent ${nodeInfo.text} click")
                                 nodeInfo.parent.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                                 return true
                             } else {
-                                Log.v(TAG, "iterateNodesAndHandle textview parent null")
+                                UtilKLogWrapper.v(TAG, "iterateNodesAndHandle textview parent null")
                             }
                         }
                     }
@@ -120,7 +121,7 @@ open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
                 "android.widget.ScrollView" == nodeInfo.className ||
                 "androidx.core.widget.NestedScrollView" == nodeInfo.className
             ) {
-                Log.v(TAG, "iterateNodesAndHandle scrollview forward")
+                UtilKLogWrapper.v(TAG, "iterateNodesAndHandle scrollview forward")
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
             }
             for (i in 0 until childCount) {

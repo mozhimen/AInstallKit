@@ -3,6 +3,7 @@ package com.mozhimen.installk.manager
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
+import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.basick.lintk.optins.OApiInit_InApplication
 import com.mozhimen.basick.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
 import com.mozhimen.basick.utilk.android.content.UtilKPackage
@@ -41,7 +42,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 //        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (_installedPackageInfos.isEmpty()) {
             _installedPackageInfos.addAll(UtilKPackage.getInstalledPackages(context, false).also {
-                Log.d(TAG, "init: _installedPackageInfos packages ${it.map { packageInfo -> packageInfo.packageName }}")
+                UtilKLogWrapper.d(TAG, "init: _installedPackageInfos packages ${it.map { packageInfo -> packageInfo.packageName }}")
             })
         }
 //        _taskKPollInfinite.apply {
@@ -102,13 +103,13 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      */
     @JvmStatic
     fun addPackage(packageName: String) {
-        Log.d(TAG, "onPackageAdded: packageName $packageName")
+        UtilKLogWrapper.d(TAG, "onPackageAdded: packageName $packageName")
         if (hasPackageName(packageName)) {
-            Log.d(TAG, "onPackageAdded: packageName already has package")
+            UtilKLogWrapper.d(TAG, "onPackageAdded: packageName already has package")
             return
         }
         UtilKPackageInfo.get(_context, packageName, 0)?.let {
-            Log.d(TAG, "onPackageAdded: packageName add packageName $packageName")
+            UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName $packageName")
             _installedPackageInfos.add(it)
         }
     }
@@ -118,13 +119,13 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      */
     @JvmStatic
     fun addPackage(packageInfo: PackageInfo) {
-        Log.d(TAG, "onPackageAdded: packageInfo ${packageInfo.packageName}")
+        UtilKLogWrapper.d(TAG, "onPackageAdded: packageInfo ${packageInfo.packageName}")
         if (hasPackageName(packageInfo)) {
-            Log.d(TAG, "onPackageAdded: packageInfo already has package")
+            UtilKLogWrapper.d(TAG, "onPackageAdded: packageInfo already has package")
             return
         }
         onPackagesAdd(packageInfo)
-        Log.d(TAG, "onPackageAdded: packageInfo add packageName ${packageInfo.packageName}")
+        UtilKLogWrapper.d(TAG, "onPackageAdded: packageInfo add packageName ${packageInfo.packageName}")
         _installedPackageInfos.add(packageInfo)
     }
 
@@ -133,16 +134,16 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      */
     @JvmStatic
     fun removePackage(packageName: String) {
-        Log.d(TAG, "onPackageRemoved: packageName $packageName")
+        UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName $packageName")
         if (!hasPackageName(packageName)) {
-            Log.d(TAG, "onPackageRemoved: packageName already remove package")
+            UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName already remove package")
             return
         }
         val iterator = _installedPackageInfos.iterator()
         while (iterator.hasNext()) {
             val packageInfo = iterator.next()
             if (packageInfo.packageName == packageName) {
-                Log.d(TAG, "onPackageRemoved: packageName remove packageName $packageName")
+                UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName remove packageName $packageName")
                 iterator.remove()
                 break
             }
@@ -154,9 +155,9 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      */
     @JvmStatic
     fun removePackage(packageInfo: PackageInfo) {
-        Log.d(TAG, "onPackageRemoved: packageInfo ${packageInfo.packageName}")
+        UtilKLogWrapper.d(TAG, "onPackageRemoved: packageInfo ${packageInfo.packageName}")
         if (!hasPackageName(packageInfo)) {
-            Log.d(TAG, "onPackageRemoved: packageInfo already remove package")
+            UtilKLogWrapper.d(TAG, "onPackageRemoved: packageInfo already remove package")
             return
         }
         onPackagesRemove(packageInfo)
@@ -164,7 +165,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
         while (iterator.hasNext()) {
             val localPackageInfo = iterator.next()
             if (localPackageInfo.packageName == packageInfo.packageName) {
-                Log.d(TAG, "onPackageRemoved: packageInfo remove packageName ${packageInfo.packageName}")
+                UtilKLogWrapper.d(TAG, "onPackageRemoved: packageInfo remove packageName ${packageInfo.packageName}")
                 iterator.remove()
                 break
             }
@@ -185,13 +186,13 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 //        if (remotePackageInfos.isEmpty() && localPackageInfos.isNotEmpty()) {        //远端没有本地有, 说明远端清空, 本地同步清空
 //            _tempNeedDeleteList.addAll(localPackageInfos)
 //            this.deleteAll()
-//            Log.d(TAG, "analyzePackageInfos: deleteAll")
+//            UtilKLogWrapper.d(TAG, "analyzePackageInfos: deleteAll")
 //        } else if (localPackageInfos.isEmpty() && remotePackageInfos.isNotEmpty()) {//远端有, 本地没有, 本地同步加入
 //            remotePackageInfos.forEach {
 //                _tempNeedAddList.add(it)
 //            }
 //            this.extractMultiple(_tempNeedAddList)
-//            Log.d(TAG, "analyzePackageInfos: addAll")
+//            UtilKLogWrapper.d(TAG, "analyzePackageInfos: addAll")
 //        } else if (localPackageInfos.isNotEmpty() && remotePackageInfos.isNotEmpty()) {
 //            //重复的部分->比较迷糊->后期再进一步筛选
 //            remotePackageInfos.forEach { remote ->
@@ -228,9 +229,9 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 //            //最后, 提取并入库
 //            this.extractMultiple(_tempNeedAddList)
 //        }
-//        Log.d(TAG, "analyzePackageInfos: tempNeedAddList ${_tempNeedAddList.joinT2listIgnoreRepeat { it.packageName }}")
-////        Log.d(TAG, "analyzePackageInfos: tempRepeatList $_tempRepeatList")
-//        Log.d(TAG, "analyzePackageInfos: tempNeedDeleteList ${_tempNeedDeleteList.joinT2listIgnoreRepeat { it.packageName }}")
+//        UtilKLogWrapper.d(TAG, "analyzePackageInfos: tempNeedAddList ${_tempNeedAddList.joinT2listIgnoreRepeat { it.packageName }}")
+////        UtilKLogWrapper.d(TAG, "analyzePackageInfos: tempRepeatList $_tempRepeatList")
+//        UtilKLogWrapper.d(TAG, "analyzePackageInfos: tempNeedDeleteList ${_tempNeedDeleteList.joinT2listIgnoreRepeat { it.packageName }}")
 //    }
 //
 //    private fun clearList() {

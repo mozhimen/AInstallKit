@@ -2,6 +2,7 @@ package com.mozhimen.installk.builder.test
 
 import android.os.Bundle
 import android.util.Log
+import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
 import androidx.lifecycle.lifecycleScope
 import com.mozhimen.basick.elemk.androidx.appcompat.bases.databinding.BaseActivityVDB
 import com.mozhimen.basick.lintk.optins.ODeviceRoot
@@ -68,19 +69,19 @@ class InstallKBuilderActivity : BaseActivityVDB<ActivityInstallkBinding>() {
                 _installK.setInstallMode(EInstallKMode.ROOT).setInstallSmartService(InstallKBuilderService::class.java).setInstallSilenceReceiver(InstallKBuilderReceiver::class.java)
                     .setInstallStateChangeListener(object : IInstallKStateListener {
                         override fun onInstallStart() {
-                            Log.d(TAG, "onInstallStart:")
+                            UtilKLogWrapper.d(TAG, "onInstallStart:")
                         }
 
                         override fun onInstallFinish() {
-                            Log.d(TAG, "onInstallFinish:")
+                            UtilKLogWrapper.d(TAG, "onInstallFinish:")
                         }
 
                         override fun onInstallFail(msg: String?) {
-                            Log.e(TAG, "onInstallFail: ${msg ?: ""}")
+                            UtilKLogWrapper.e(TAG, "onInstallFail: ${msg ?: ""}")
                         }
 
                         override fun onNeedPermissions(type: EInstallKPermissionType) {
-                            Log.w(TAG, "onNeedPermissions: $type")
+                            UtilKLogWrapper.w(TAG, "onNeedPermissions: $type")
                             when (type) {
                                 EInstallKPermissionType.COMMON -> {
                                     ManifestKPermission.requestPermissions(this@InstallKBuilderActivity, onSuccess = { "权限申请成功".showToast() })

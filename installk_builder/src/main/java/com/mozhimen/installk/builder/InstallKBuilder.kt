@@ -2,6 +2,7 @@ package com.mozhimen.installk.builder
 
 import android.os.*
 import android.util.Log
+import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.basick.elemk.android.os.cons.CVersCode
 import com.mozhimen.basick.lintk.optins.ODeviceRoot
 import com.mozhimen.basick.lintk.optins.permission.OPermission_INSTALL_PACKAGES
@@ -102,7 +103,7 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
                 installByMode(strPathNameApk)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e(TAG, "install: ${e.message}")
+                UtilKLogWrapper.e(TAG, "install: ${e.message}")
                 e.message?.e(TAG)
                 _handler.sendMessage(Message().apply {
                     what = CInstallKCons.MSG_INSTALL_FAIL
@@ -120,7 +121,7 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
         require(strPathNameApk.isNotEmpty() && strPathNameApk.endsWith(".apk")) { "$TAG $strPathNameApk not a correct apk file path" }
         require(strPathNameApk.isFileExist()) { "$TAG $strPathNameApk is not exist" }
         if (!UtilKPermission.isSelfGranted(CInstallKCons.PERMISSIONS)) {
-            Log.w(TAG, "installByMode: onNeedPermissions PERMISSIONS")
+            UtilKLogWrapper.w(TAG, "installByMode: onNeedPermissions PERMISSIONS")
             _handler.sendMessage(Message().apply {
                 what = CInstallKCons.MSG_NEED_PERMISSION
                 obj = EInstallKPermissionType.COMMON
@@ -129,7 +130,7 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
         }
         val targetSdkVersion = UtilKApplicationInfo.getTargetSdkVersion_ofCxt(_context)
         if (targetSdkVersion >= CVersCode.V_26_8_O && UtilKBuildVersion.isAfterV_26_8_O() && !UtilKAppInstall.hasRequestInstallPackages()) {        // 允许安装应用
-            Log.w(TAG, "installByMode: onNeedPermissions isAppInstallsPermissionEnable false")
+            UtilKLogWrapper.w(TAG, "installByMode: onNeedPermissions isAppInstallsPermissionEnable false")
             _handler.sendMessage(Message().apply {
                 what = CInstallKCons.MSG_NEED_PERMISSION
                 obj = EInstallKPermissionType.INSTALL
@@ -141,19 +142,19 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
             EInstallKMode.AUTO -> {
                 //try install root
                 if (UtilKSys.isRoot() && UtilKAppInstall.install_ofRuntime(strPathNameApk)) {
-                    Log.d(TAG, "installByMode: AUTO as ROOT success")
+                    UtilKLogWrapper.d(TAG, "installByMode: AUTO as ROOT success")
                     return
                 }
                 //try install silence
                 if (_silenceReceiverClazz != null && (UtilKSys.isRoot() || !UtilKApp.isUserApp(_context))) {
                     UtilKAppInstall.install_ofSilence(strPathNameApk, _silenceReceiverClazz!!)
-                    Log.d(TAG, "installByMode: AUTO as SILENCE success")
+                    UtilKLogWrapper.d(TAG, "installByMode: AUTO as SILENCE success")
                     return
                 }
                 //try install smart
                 if (_smartServiceClazz != null && UtilKPermission.hasAccessibility(_smartServiceClazz!!)) {
                     UtilKAppInstall.install_ofView(strPathNameApk)
-                    Log.d(TAG, "installByMode: AUTO as SMART success")
+                    UtilKLogWrapper.d(TAG, "installByMode: AUTO as SMART success")
                     return
                 }
                 //try install hand
@@ -163,20 +164,20 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
             EInstallKMode.ROOT -> {
                 require(UtilKSys.isRoot()) { "$TAG this device has not root" }
                 UtilKAppInstall.install_ofRuntime(strPathNameApk)
-                Log.d(TAG, "installByMode: ROOT success")
+                UtilKLogWrapper.d(TAG, "installByMode: ROOT success")
             }
 
             EInstallKMode.SILENCE -> {
                 requireNotNull(_silenceReceiverClazz) { "$TAG silence receiver must not be null" }
                 require(UtilKSys.isRoot() || !UtilKApp.isUserApp(_context)) { "$TAG this device has not root or its system app" }
                 UtilKAppInstall.install_ofSilence(strPathNameApk, _silenceReceiverClazz!!)
-                Log.d(TAG, "installByMode: SILENCE success")
+                UtilKLogWrapper.d(TAG, "installByMode: SILENCE success")
             }
 
             EInstallKMode.SMART -> {
                 requireNotNull(_smartServiceClazz) { "$TAG smart service must not be null" }
                 if (!UtilKPermission.hasAccessibility(_smartServiceClazz!!)) {
-                    Log.w(TAG, "installByMode: SMART isAccessibilityPermissionEnable false")
+                    UtilKLogWrapper.w(TAG, "installByMode: SMART isAccessibilityPermissionEnable false")
                     _handler.sendMessage(Message().apply {
                         what = CInstallKCons.MSG_NEED_PERMISSION
                         obj = EInstallKPermissionType.ACCESSIBILITY
@@ -184,12 +185,12 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
                     return
                 }
                 UtilKAppInstall.install_ofView(strPathNameApk)
-                Log.d(TAG, "installByMode: SMART success")
+                UtilKLogWrapper.d(TAG, "installByMode: SMART success")
             }
 
             EInstallKMode.HAND -> {
                 UtilKAppInstall.install_ofView(strPathNameApk)
-                Log.d(TAG, "installByMode: HAND success")
+                UtilKLogWrapper.d(TAG, "installByMode: HAND success")
             }
         }
     }
@@ -208,7 +209,7 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
 //            installByMode(strPathNameApk)
 //        } catch (e: Exception) {
 //            e.printStackTrace()
-//            Log.e(TAG, "downloadFromUrlAndInstall: ${e.message}")
+//            UtilKLogWrapper.e(TAG, "downloadFromUrlAndInstall: ${e.message}")
 //            _handler.sendMessage(Message().apply {
 //                what = CCons.MSG_INSTALL_FAIL
 //                obj = e.message ?: ""
