@@ -25,7 +25,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
     private val _installedPackageInfos = mutableListOf<PackageInfo>()//用来保存包的信息
 
 //    @OptIn(OptInApiCall_BindLifecycle::class, OptInApiInit_ByLazy::class)
-//    private val _taskKPollInfinite: TaskKPollInfinite by lazy { TaskKPollInfinite() }
+//    private val _taskKPollInfinite: TaskKPollInfinite by lazy_ofNone { TaskKPollInfinite() }
 
     private val _packagesChangeListeners = mutableListOf<IPackagesChangeListener>()
 

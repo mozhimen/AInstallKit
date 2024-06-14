@@ -53,9 +53,9 @@ import kotlinx.coroutines.launch
     CPermission.READ_INSTALL_SESSIONS,
 )
 class InstallKBuilderActivity : BaseActivityVDB<ActivityInstallkBinding>() {
-    private val _strPathNameApk by lazy { UtilKStrPath.Absolute.Internal.getFiles() + "/installk/componentktest.apk" }
+    private val _strPathNameApk by lazy_ofNone { UtilKStrPath.Absolute.Internal.getFiles() + "/installk/componentktest.apk" }
     @OptIn(OptInDeviceRoot::class)
-    private val _installK by lazy { InstallKBuilder() }
+    private val _installK by lazy_ofNone { InstallKBuilder() }
 
     @OptIn(OptInDeviceRoot::class)
     override fun initView(savedInstanceState: Bundle?) {
