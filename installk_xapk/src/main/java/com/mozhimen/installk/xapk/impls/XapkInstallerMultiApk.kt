@@ -3,7 +3,7 @@ package com.mozhimen.installk.xapk.impls
 import android.content.Context
 import com.mozhimen.basick.utilk.android.content.startContext
 import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
-import com.mozhimen.installk.xapk.InstallActivity
+import com.mozhimen.installk.xapk.InstallKXapkActivity
 import com.mozhimen.installk.xapk.bases.BaseXapkInstaller
 import java.io.File
 
@@ -29,9 +29,14 @@ class XapkInstallerMultiApk(xapkPath: String, xapkUnzipOutputDir: File) : BaseXa
     }
 
     private fun enterInstallActivity(xapkPath: String, apkFilePaths: ArrayList<String>, context: Context) {
-        UtilKLogWrapper.d(TAG, "multi apk xapk installer,enter InstallActivity,xapkPath:$xapkPath,apkFilePaths:$apkFilePaths")
-        context.startContext<InstallActivity> {
-            putStringArrayListExtra(InstallActivity.KEY_APK_PATHS, apkFilePaths)
+        UtilKLogWrapper.d(TAG, "enterInstallActivity----->")
+        UtilKLogWrapper.d(TAG, "multi apk xapk installer,enter InstallActivity,xapkPath:$xapkPath")
+        apkFilePaths.forEach {
+            UtilKLogWrapper.d(TAG, "enterInstallActivity: apkFilePath: $it")
+        }
+        UtilKLogWrapper.d(TAG, "enterInstallActivity----->")
+        context.startContext<InstallKXapkActivity> {
+            putStringArrayListExtra(InstallKXapkActivity.EXTRA_APK_PATH, apkFilePaths)
         }
     }
 }

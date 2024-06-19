@@ -24,6 +24,8 @@ include ':installk_manager'
 include ':installk_builder'
 include ':installk_builder_test'
 include ':installk_xapk'
+include ':installk_xapk_ackpine'
+include ':installk_xapk_ackpine_test'
 //SwiftKit
 include ':SwiftKit'
 project(':SwiftKit').projectDir = new File("D:\\WorkSpace\\GitHub\\SwiftKit")
@@ -33,3 +35,13 @@ include ':SwiftKit:xmlk'
 include ':AIOKit'
 project(':AIOKit').projectDir = new File("D:\\WorkSpace\\GitHub\\AIOKit")
 include ':AIOKit:iok_ztzip'
+include ':installk_xapk_test'
+//ANetKit_okdownload
+include ':ANetKit_okdownload'
+project(':ANetKit_okdownload').projectDir = new File("D:\\WorkSpace\\GitHub\\ANetKit_okdownload")
+include ':ANetKit_okdownload:okdownload'
+//AManifestKit_XXPermissions
+include ':AManifestKit_XXPermissions'
+project(':AManifestKit_XXPermissions').projectDir = new File("D:\\WorkSpace\\GitHub\\AManifestKit_XXPermissions")
+include ':AManifestKit_XXPermissions:manifestk_xxpermissions'
+include ':AManifestKit_XXPermissions:library'
