@@ -11,6 +11,7 @@ import com.mozhimen.basick.elemk.android.app.cons.CActivity
 import com.mozhimen.basick.elemk.androidx.appcompat.bases.BaseActivity
 import com.mozhimen.basick.taskk.executor.TaskKExecutor
 import com.mozhimen.basick.utilk.android.content.UtilKPackageInstaller
+import com.mozhimen.basick.utilk.android.content.UtilKPackageInstallerSession
 import java.io.IOException
 
 /**
@@ -49,7 +50,7 @@ class InstallKXapkActivity : BaseActivity() {
         TaskKExecutor.execute(NAME) {
             try {
                 for (strApkPathName in _strApkPathNames!!) {
-                    UtilKPackageInstaller.addStrApkPathNameToSession(strApkPathName, _packageInstallerSession)
+                    UtilKPackageInstallerSession.addStrApkPathNameToSession(strApkPathName, _packageInstallerSession)
                 }
                 commitSession(_packageInstallerSession)
             } catch (e: IOException) {
