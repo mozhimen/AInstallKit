@@ -15,6 +15,7 @@ import com.mozhimen.basick.lintk.optins.permission.OPermission_WRITE_EXTERNAL_ST
 import com.mozhimen.basick.utilk.kotlin.UtilKStrPath
 import com.mozhimen.basick.utilk.kotlin.isFileNotExist
 import com.mozhimen.basick.utilk.kotlin.strAssetName2file
+import com.mozhimen.basick.utilk.kotlin.strFilePath2uri
 import com.mozhimen.installk.splits.ackpine.test.databinding.ActivityMainBinding
 import com.mozhimen.manifestk.xxpermissions.XXPermissionsCheckUtil
 import com.mozhimen.manifestk.xxpermissions.XXPermissionsNavHostUtil
@@ -45,7 +46,7 @@ class MainActivity : BaseActivityVB<ActivityMainBinding>() {
                             "test.xapk".strAssetName2file(_strXApkPathName)
                         }
                     }
-                    install(_strXApkPathName)
+                    install(_strXApkPathName.strFilePath2uri()?:return@launch, this@MainActivity.applicationContext)
                 }
             }
         }
@@ -80,15 +81,30 @@ class MainActivity : BaseActivityVB<ActivityMainBinding>() {
 
     @OptIn(OPermission_WRITE_EXTERNAL_STORAGE::class, OPermission_MANAGE_EXTERNAL_STORAGE::class)
     @SuppressLint("MissingPermission")
-    private fun install(zippedFileUri: Uri,context: Context) {
+    private fun install(zippedFileUri: Uri, context: Context) {
         val splits = ZippedApkSplits.getApksForUri(zippedFileUri, context) // reading APKs from a zipped file
             .filterCompatible(context) // filtering the most compatible splits
             .throwOnInvalidSplitPackage()
+
         val splitsList = try {
             splits.toList()
         } catch (exception: SplitPackageException) {
             println(exception)
             emptyList()
         }
+    }
+
+    fun installPackage(apks: Sequence<Apk>, fileName: String) = viewModelScope.launch {
+        val uris = runInterruptible(Dispatchers.IO) { apks.toUrisList() }
+        if (uris.isEmpty()) {
+            return@launch
+        }
+        val session = packageInstaller.createSession(uris) {
+            name = fileName
+            requireUserAction = false
+        }
+        val sessionData = SessionData(session.id, fileName)
+        sessionDataRepository.addSessionData(sessionData)
+        awaitSession(session)
     }
 }
