@@ -24,8 +24,8 @@ include ':installk_manager'
 include ':installk_builder'
 include ':installk_builder_test'
 include ':installk_xapk'
-include ':installk_xapk_ackpine'
-include ':installk_xapk_ackpine_test'
+include ':installk_splits_ackpine'
+include ':installk_splits_ackpine_test'
 //SwiftKit
 include ':SwiftKit'
 project(':SwiftKit').projectDir = new File("D:\\WorkSpace\\GitHub\\SwiftKit")
