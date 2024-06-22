@@ -8,8 +8,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        minSdk 19
-        multiDexEnabled true
+        minSdk 21
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -31,7 +30,11 @@ android {
 }
 
 dependencies {
-    api "ru.solrudev.ackpine:ackpine-splits:0.6.1"
+//    api "ru.solrudev.ackpine:ackpine-splits:0.6.1"
+//    api "ru.solrudev.ackpine:ackpine-ktx:0.6.1"
+    api project(':AInstallKit_Ackpine:ackpine-splits')
+    api project(':AInstallKit_Ackpine:ackpine-ktx')
+    implementation project(':SwiftKit:basick')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

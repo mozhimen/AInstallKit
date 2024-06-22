@@ -45,3 +45,15 @@ include ':AManifestKit_XXPermissions'
 project(':AManifestKit_XXPermissions').projectDir = new File("D:\\WorkSpace\\GitHub\\AManifestKit_XXPermissions")
 include ':AManifestKit_XXPermissions:manifestk_xxpermissions'
 include ':AManifestKit_XXPermissions:library'
+//AInstallKit_Ackpine
+include ':AInstallKit_Ackpine'
+project(':AInstallKit_Ackpine').projectDir = new File("D:\\WorkSpace\\GitHub\\AInstallKit_Ackpine")
+include ':AInstallKit_Ackpine:ackpine-splits'
+include ':AInstallKit_Ackpine:ackpine-ktx'
+include ':AInstallKit_Ackpine:ackpine-core'
+include ':AInstallKit_Ackpine:ackpine-runtime'
+//ALibKit_Jetpack
+include ':ALibKit_Jetpack'
+project(':ALibKit_Jetpack').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetpack")
+include ':ALibKit_Jetpack:startup'
+include ':ALibKit_Jetpack:room'
