@@ -1,7 +1,5 @@
 package com.mozhimen.installk.manager.commons
 
-import android.content.pm.PackageInfo
-
 /**
  * @ClassName IPackagesChangeListener
  * @Description TODO
@@ -10,6 +8,6 @@ import android.content.pm.PackageInfo
  * @Version 1.0
  */
 interface IPackagesChangeListener {
-    fun onPackageAdd(packageInfo: PackageInfo) {}
-    fun onPackageRemove(packageInfo: PackageInfo) {}
+    fun onPackageAdd(packageName: String, versionCode: Int) {}
+    fun onPackageRemove(packageName: String) {}
 }
