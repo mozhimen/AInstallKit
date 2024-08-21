@@ -2,6 +2,9 @@ package com.mozhimen.installk.manager
 
 import android.content.Context
 import android.content.pm.PackageInfo
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.mozhimen.basick.lintk.optins.OApiCall_BindLifecycle
+import com.mozhimen.basick.lintk.optins.OApiInit_ByLazy
 import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.basick.lintk.optins.OApiInit_InApplication
 import com.mozhimen.basick.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
@@ -9,10 +12,11 @@ import com.mozhimen.basick.utilk.android.content.UtilKPackage
 import com.mozhimen.basick.utilk.android.content.UtilKPackageInfo
 import com.mozhimen.basick.utilk.android.content.getVersionCode
 import com.mozhimen.basick.utilk.bases.BaseUtilK
-import com.mozhimen.basick.utilk.kotlin.collections.containsBy
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
+import com.mozhimen.installk.manager.helpers.InstallKReceiverProxy
 import com.mozhimen.installk.manager.mos.PackageBundle
 import com.mozhimen.installk.manager.utils.packageInfo2packageBundle
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -25,17 +29,34 @@ import java.util.concurrent.CopyOnWriteArrayList
 @OApiInit_InApplication
 object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
-    private val _installedPackageBundles = CopyOnWriteArrayList<PackageBundle>()//用来保存包的信息
+    private val _installedPackageBundles = ConcurrentHashMap<String, PackageBundle>()//用来保存包的信息
     private val _packagesChangeListeners = mutableListOf<IPackagesChangeListener>()
+    private val _iPackagesChangeListener = object : IPackagesChangeListener {
+        override fun onPackageAddOrReplace(packageName: String, versionCode: Int) {
+            addOrUpdatePackage(packageName, versionCode)
+        }
+
+        override fun onPackageRemove(packageName: String) {
+            removePackage(packageName)
+        }
+    }
+
+    @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
+    private val _installKReceiverProxy by lazy { InstallKReceiverProxy(_context, ProcessLifecycleOwner.get(), _iPackagesChangeListener) }
+
+    @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
+    val installKReceiverProxy get() = _installKReceiverProxy
 
     /////////////////////////////////////////////////////////////////////////
 
-    @OptIn(OPermission_QUERY_ALL_PACKAGES::class)
+    @OptIn(OPermission_QUERY_ALL_PACKAGES::class, OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
     fun init(context: Context) {
+        //注册
+        _installKReceiverProxy.bindLifecycle(ProcessLifecycleOwner.get())
+        //填充数据
         if (_installedPackageBundles.isEmpty()) {
-            _installedPackageBundles.addAll(UtilKPackage.getInstalledPackages(context, false).map { it.packageInfo2packageBundle() }.also {
-                UtilKLogWrapper.d(TAG, "init: _installedPackageInfos packages ${it.map { packageBundle -> packageBundle.packageName }}")
-            })
+            _installedPackageBundles.putAll(UtilKPackage.getInstalledPackages(false).map { it.packageName to it.packageInfo2packageBundle() })
+            UtilKLogWrapper.d(TAG, "init: _installedPackageInfos packages ${_installedPackageBundles.values}")
         }
     }
 
@@ -58,7 +79,15 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
     /////////////////////////////////////////////////////////////////////////
 
     fun getPackageBundle_ofPackageName(packageName: String): PackageBundle? {
-        return _installedPackageBundles.find { it.packageName == packageName }
+        return _installedPackageBundles[packageName]
+    }
+
+    fun getPackageBundle_ofPackageName_versionCode(packageName: String, versionCode: Int): PackageBundle? {
+        return getPackageBundle_ofPackageName(packageName).takeIf { it?.versionCode == versionCode }
+    }
+
+    fun getPackageBundle_ofPackageName_satisfyVersionCode(packageName: String, versionCode: Int): PackageBundle? {
+        return getPackageBundle_ofPackageName(packageName).takeIf { it != null && (it.versionCode >= versionCode) }
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -68,14 +97,18 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      */
     @JvmStatic
     fun hasPackageName(packageName: String): Boolean =
-        _installedPackageBundles.containsBy { exist -> packageName == exist.packageName }
+        getPackageBundle_ofPackageName(packageName) != null
+
+    @JvmStatic
+    fun hasPackageName_versionCode(packageName: String, versionCode: Int): Boolean =
+        getPackageBundle_ofPackageName_versionCode(packageName, versionCode) != null
 
     /**
      * 查询应用是否安装并且大于等于需要下载的版本
      */
     @JvmStatic
-    fun hasPackageName_satisfyVersion(packageName: String, versionCode: Int): Boolean =
-        _installedPackageBundles.containsBy { existPackageBundle -> packageName == existPackageBundle.packageName && versionCode <= existPackageBundle.versionCode }
+    fun hasPackageName_satisfyVersionCode(packageName: String, versionCode: Int): Boolean =
+        getPackageBundle_ofPackageName_satisfyVersionCode(packageName, versionCode) != null
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -83,18 +116,26 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      * 应用安装的时候调用
      */
     @JvmStatic
-    fun addPackage(packageName: String, versionCode: Int) {
+    fun addOrUpdatePackage(packageName: String, versionCode: Int) {
         UtilKLogWrapper.d(TAG, "onPackageAdded: packageName $packageName")
-        if (hasPackageName(packageName)) {
+        val packageBundle = getPackageBundle_ofPackageName_versionCode(packageName, versionCode)
+        if (packageBundle != null && packageBundle.versionCode == versionCode) {
             UtilKLogWrapper.d(TAG, "onPackageAdded: packageName already has package")
             return
-        }
-        UtilKPackageInfo.get(_context, packageName, 0)?.let {
-            UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName $packageName")
-            _installedPackageBundles.add(it.packageInfo2packageBundle()).also { onPackagesAdd(packageName, versionCode) }
-        } ?: run {
-            UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName (not find) $packageName")
-            _installedPackageBundles.add(PackageBundle(packageName, versionCode)).also { onPackagesAdd(packageName, versionCode) }
+        } else if (packageBundle != null) {
+            packageBundle.versionCode = versionCode
+            _installedPackageBundles[packageName] = packageBundle
+            onPackagesAddOrReplace(packageName, versionCode)
+        } else {
+            UtilKPackageInfo.get(_context, packageName, 0)?.let {
+                UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName $packageName")
+                _installedPackageBundles[packageName] = it.packageInfo2packageBundle()
+                onPackagesAddOrReplace(packageName, versionCode)
+            } ?: run {
+                UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName (not find) $packageName")
+                _installedPackageBundles[packageName] = PackageBundle(packageName, versionCode)
+                onPackagesAddOrReplace(packageName, versionCode)
+            }
         }
     }
 
@@ -102,8 +143,8 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      * 应用安装的时候调用
      */
     @JvmStatic
-    fun addPackage(packageInfo: PackageInfo) {
-        addPackage(packageInfo.packageName, packageInfo.getVersionCode())
+    fun addOrUpdatePackage(packageInfo: PackageInfo) {
+        addOrUpdatePackage(packageInfo.packageName, packageInfo.getVersionCode())
     }
 
     /**
@@ -116,16 +157,8 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
             UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName already remove package")
             return
         }
+        _installedPackageBundles.remove(packageName)
         onPackagesRemove(packageName)
-        val iterator = _installedPackageBundles.iterator()
-        while (iterator.hasNext()) {
-            val packageInfo = iterator.next()
-            if (packageInfo.packageName == packageName) {
-                UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName remove packageName $packageName")
-                iterator.remove()
-                break
-            }
-        }
     }
 
     /**
@@ -229,9 +262,9 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 ////        }
 //    }
 
-    private fun onPackagesAdd(packageName: String, versionCode: Int) {
+    private fun onPackagesAddOrReplace(packageName: String, versionCode: Int) {
         for (listener in _packagesChangeListeners) {
-            listener.onPackageAdd(packageName, versionCode)
+            listener.onPackageAddOrReplace(packageName, versionCode)
         }
     }
 

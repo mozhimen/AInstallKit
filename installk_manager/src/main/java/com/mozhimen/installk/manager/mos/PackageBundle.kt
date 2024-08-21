@@ -11,5 +11,5 @@ import android.content.pm.PackageInfo
  */
 data class PackageBundle(
     val packageName: String,
-    val versionCode: Int
+    var versionCode: Int
 )
