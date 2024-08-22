@@ -17,7 +17,6 @@ import com.mozhimen.installk.manager.helpers.InstallKReceiverProxy
 import com.mozhimen.installk.manager.mos.PackageBundle
 import com.mozhimen.installk.manager.utils.packageInfo2packageBundle
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * @ClassName InstallKManager
@@ -44,9 +43,6 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
     @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
     private val _installKReceiverProxy by lazy { InstallKReceiverProxy(_context, ProcessLifecycleOwner.get(), _iPackagesChangeListener) }
 
-    @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
-    val installKReceiverProxy get() = _installKReceiverProxy
-
     /////////////////////////////////////////////////////////////////////////
 
     @OptIn(OPermission_QUERY_ALL_PACKAGES::class, OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
@@ -59,6 +55,10 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
             UtilKLogWrapper.d(TAG, "init: _installedPackageInfos packages ${_installedPackageBundles.values}")
         }
     }
+
+    @OptIn(OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
+    fun getInstallKReceiverProxy():InstallKReceiverProxy =
+        _installKReceiverProxy
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +86,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
         return getPackageBundle_ofPackageName(packageName).takeIf { it?.versionCode == versionCode }
     }
 
-    fun getPackageBundle_ofPackageName_satisfyVersionCode(packageName: String, versionCode: Int): PackageBundle? {
+    fun getPackageBundle_ofPackageName_lessThanInstalledVersionCode(packageName: String, versionCode: Int): PackageBundle? {
         return getPackageBundle_ofPackageName(packageName).takeIf { it != null && (it.versionCode >= versionCode) }
     }
 
@@ -107,8 +107,8 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      * 查询应用是否安装并且大于等于需要下载的版本
      */
     @JvmStatic
-    fun hasPackageName_satisfyVersionCode(packageName: String, versionCode: Int): Boolean =
-        getPackageBundle_ofPackageName_satisfyVersionCode(packageName, versionCode) != null
+    fun hasPackageName_lessThanInstalledVersionCode(packageName: String, versionCode: Int): Boolean =
+        getPackageBundle_ofPackageName_lessThanInstalledVersionCode(packageName, versionCode) != null
 
     /////////////////////////////////////////////////////////////////////////
 
