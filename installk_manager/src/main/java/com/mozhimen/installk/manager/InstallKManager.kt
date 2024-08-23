@@ -2,6 +2,7 @@ package com.mozhimen.installk.manager
 
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.mozhimen.basick.lintk.optins.OApiCall_BindLifecycle
 import com.mozhimen.basick.lintk.optins.OApiInit_ByLazy
@@ -117,7 +118,8 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
      */
     @JvmStatic
     fun addOrUpdatePackage(packageName: String, versionCode: Int) {
-        UtilKLogWrapper.d(TAG, "onPackageAdded: packageName $packageName")
+        UtilKLogWrapper.d(TAG, "onPackageAdded: packageName $packageName versionCode $versionCode")
+        onPackagesAddOrReplace(packageName, versionCode)
         val packageBundle = getPackageBundle_ofPackageName_versionCode(packageName, versionCode)
         if (packageBundle != null && packageBundle.versionCode == versionCode) {
             UtilKLogWrapper.d(TAG, "onPackageAdded: packageName already has package")
@@ -125,16 +127,13 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
         } else if (packageBundle != null) {
             packageBundle.versionCode = versionCode
             _installedPackageBundles[packageName] = packageBundle
-            onPackagesAddOrReplace(packageName, versionCode)
         } else {
             UtilKPackageInfo.get(_context, packageName, 0)?.let {
-                UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName $packageName")
+                UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName $packageName versionCode $versionCode")
                 _installedPackageBundles[packageName] = it.packageInfo2packageBundle()
-                onPackagesAddOrReplace(packageName, versionCode)
             } ?: run {
-                UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName (not find) $packageName")
+                UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName (not find) $packageName versionCode $versionCode")
                 _installedPackageBundles[packageName] = PackageBundle(packageName, versionCode)
-                onPackagesAddOrReplace(packageName, versionCode)
             }
         }
     }
@@ -153,12 +152,12 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
     @JvmStatic
     fun removePackage(packageName: String) {
         UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName $packageName")
+        onPackagesRemove(packageName)
         if (!hasPackageName(packageName)) {
             UtilKLogWrapper.d(TAG, "onPackageRemoved: packageName already remove package")
             return
         }
         _installedPackageBundles.remove(packageName)
-        onPackagesRemove(packageName)
     }
 
     /**
@@ -264,12 +263,14 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
     private fun onPackagesAddOrReplace(packageName: String, versionCode: Int) {
         for (listener in _packagesChangeListeners) {
+            UtilKLogWrapper.d(TAG, "onPackagesAddOrReplace: listener $listener")
             listener.onPackageAddOrReplace(packageName, versionCode)
         }
     }
 
     private fun onPackagesRemove(packageName: String) {
         for (listener in _packagesChangeListeners) {
+            UtilKLogWrapper.d(TAG, "onPackagesRemove: listener $listener")
             listener.onPackageRemove(packageName)
         }
     }

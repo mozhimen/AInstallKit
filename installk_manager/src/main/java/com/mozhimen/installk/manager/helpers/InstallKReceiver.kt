@@ -39,7 +39,7 @@ class InstallKReceiver(private val _iPackagesChangeListener: IPackagesChangeList
                             if (packageInfo != null) {
                                 UtilKLogWrapper.d(TAG, "onReceive: packageInfo != null")
 
-                                _iPackagesChangeListener.onPackageAddOrReplace(packageInfo.versionName, packageInfo.getVersionCode())
+                                _iPackagesChangeListener.onPackageAddOrReplace(packageInfo.packageName, packageInfo.getVersionCode())
                             } else {
                                 UtilKLogWrapper.e(TAG, "onReceive: cant find packageInfo just now")
 
