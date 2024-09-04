@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.mozhimen.basick.elemk.androidx.lifecycle.bases.BaseViewModel
-import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
+import com.mozhimen.kotlin.elemk.androidx.lifecycle.bases.BaseViewModel
+import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

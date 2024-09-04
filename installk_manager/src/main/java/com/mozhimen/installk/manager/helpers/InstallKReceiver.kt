@@ -2,12 +2,12 @@ package com.mozhimen.installk.manager.helpers
 
 import android.content.Context
 import android.content.Intent
-import com.mozhimen.basick.elemk.android.content.bases.BaseBroadcastReceiver
-import com.mozhimen.basick.elemk.android.content.cons.CIntent
-import com.mozhimen.basick.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
-import com.mozhimen.basick.utilk.android.content.UtilKPackage
-import com.mozhimen.basick.utilk.android.content.getVersionCode
-import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
+import com.mozhimen.kotlin.elemk.android.content.bases.BaseBroadcastReceiver
+import com.mozhimen.kotlin.elemk.android.content.cons.CIntent
+import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
+import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
+import com.mozhimen.kotlin.utilk.android.content.getVersionCode
+import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
 
 /**

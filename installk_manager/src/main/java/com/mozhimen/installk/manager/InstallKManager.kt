@@ -2,17 +2,16 @@ package com.mozhimen.installk.manager
 
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.mozhimen.basick.lintk.optins.OApiCall_BindLifecycle
-import com.mozhimen.basick.lintk.optins.OApiInit_ByLazy
-import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
-import com.mozhimen.basick.lintk.optins.OApiInit_InApplication
-import com.mozhimen.basick.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
-import com.mozhimen.basick.utilk.android.content.UtilKPackage
-import com.mozhimen.basick.utilk.android.content.UtilKPackageInfo
-import com.mozhimen.basick.utilk.android.content.getVersionCode
-import com.mozhimen.basick.utilk.bases.BaseUtilK
+import com.mozhimen.kotlin.lintk.optins.OApiCall_BindLifecycle
+import com.mozhimen.kotlin.lintk.optins.OApiInit_ByLazy
+import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
+import com.mozhimen.kotlin.lintk.optins.OApiInit_InApplication
+import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
+import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
+import com.mozhimen.kotlin.utilk.android.content.UtilKPackageInfo
+import com.mozhimen.kotlin.utilk.android.content.getVersionCode
+import com.mozhimen.kotlin.utilk.bases.BaseUtilK
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
 import com.mozhimen.installk.manager.helpers.InstallKReceiverProxy
 import com.mozhimen.installk.manager.mos.PackageBundle

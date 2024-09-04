@@ -1,6 +1,6 @@
 package com.mozhimen.installk.builder.cons
 
-import com.mozhimen.basick.manifestk.cons.CPermission
+import com.mozhimen.kotlin.elemk.android.cons.CPermission
 
 /**
  * @ClassName CCons

@@ -1,9 +1,9 @@
 package com.mozhimen.installk.xapk.impls
 
 import android.content.Context
-import com.mozhimen.basick.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
-import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
-import com.mozhimen.basick.utilk.wrapper.UtilKAppInstall
+import com.mozhimen.kotlin.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
+import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
+import com.mozhimen.kotlin.utilk.wrapper.UtilKAppInstall
 import com.mozhimen.installk.xapk.bases.BaseXapkInstaller
 import java.io.File
 

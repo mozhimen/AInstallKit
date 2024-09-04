@@ -2,12 +2,12 @@ package com.mozhimen.installk.builder.bases
 
 import android.accessibilityservice.AccessibilityService
 import android.util.Log
-import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
+import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
-import com.mozhimen.basick.elemk.android.os.cons.CVersCode
-import com.mozhimen.basick.utilk.commons.IUtilK
+import com.mozhimen.kotlin.elemk.android.os.cons.CVersCode
+import com.mozhimen.kotlin.utilk.commons.IUtilK
 
 /**
  * @ClassName InstallKSmartService

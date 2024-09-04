@@ -1,8 +1,8 @@
 package com.mozhimen.installk.xapk.impls
 
 import android.content.Context
-import com.mozhimen.basick.utilk.android.content.startContext
-import com.mozhimen.basick.utilk.android.util.UtilKLogWrapper
+import com.mozhimen.kotlin.utilk.android.content.startContext
+import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.installk.xapk.InstallKXapkActivity
 import com.mozhimen.installk.xapk.bases.BaseXapkInstaller
 import java.io.File

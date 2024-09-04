@@ -1,8 +1,8 @@
 package com.mozhimen.installk.builder.test
 
-import com.mozhimen.basick.elemk.android.content.bases.BasePackageBroadcastReceiver
-import com.mozhimen.basick.lintk.optins.OApiTarget_AtV_25_71_N1
-import com.mozhimen.basick.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
+import com.mozhimen.kotlin.elemk.android.content.bases.BasePackageBroadcastReceiver
+import com.mozhimen.kotlin.lintk.optins.OApiTarget_AtV_25_71_N1
+import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
 
 /**
  * @ClassName InstallReceiver

@@ -1,7 +1,7 @@
 package com.mozhimen.installk.manager.utils
 
 import android.content.pm.PackageInfo
-import com.mozhimen.basick.utilk.android.content.UtilKPackageInfo
+import com.mozhimen.kotlin.utilk.android.content.UtilKPackageInfo
 import com.mozhimen.installk.manager.mos.PackageBundle
 
 /**

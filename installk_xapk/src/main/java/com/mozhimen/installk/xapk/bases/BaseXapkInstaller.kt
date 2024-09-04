@@ -1,7 +1,7 @@
 package com.mozhimen.installk.xapk.bases
 
 import android.content.Context
-import com.mozhimen.basick.utilk.commons.IUtilK
+import com.mozhimen.kotlin.utilk.commons.IUtilK
 import java.io.File
 
 abstract class BaseXapkInstaller(val xapkPath: String, val xapkUnzipOutputDir: File) : IUtilK {
