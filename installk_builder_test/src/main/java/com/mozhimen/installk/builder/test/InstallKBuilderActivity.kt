@@ -3,7 +3,7 @@ package com.mozhimen.installk.builder.test
 import android.os.Bundle
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import androidx.lifecycle.lifecycleScope
-import com.mozhimen.mvvmk.bases.activity.databinding.BaseActivityVDB
+import com.mozhimen.bindk.bases.activity.databinding.BaseActivityVDB
 import com.mozhimen.kotlin.lintk.optins.ODeviceRoot
 import com.mozhimen.kotlin.elemk.android.cons.CPermission
 import com.mozhimen.manifestk.permission.ManifestKPermission
