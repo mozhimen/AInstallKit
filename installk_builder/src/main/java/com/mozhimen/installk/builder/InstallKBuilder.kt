@@ -128,7 +128,7 @@ class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
             })
             return
         }
-        val targetSdkVersion = UtilKApplicationInfo.getTargetSdkVersion_ofCxt(_context)
+        val targetSdkVersion = UtilKApplicationInfo.getTargetSdkVersion(_context)
         if (targetSdkVersion >= CVersCode.V_26_8_O && UtilKBuildVersion.isAfterV_26_8_O() && !UtilKAppInstall.hasRequestInstallPackages()) {        // 允许安装应用
             UtilKLogWrapper.w(TAG, "installByMode: onNeedPermissions isAppInstallsPermissionEnable false")
             _handler.sendMessage(Message().apply {
