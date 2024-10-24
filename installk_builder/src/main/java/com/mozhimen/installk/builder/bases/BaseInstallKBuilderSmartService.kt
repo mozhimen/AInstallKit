@@ -33,7 +33,7 @@ android:resource="@xml/installk_smart_accessibility_service_config" />
  * @Date 2023/1/4 22:39
  * @Version 1.0
  */
-@RequiresApi(CVersCode.V_16_41_J)
+@RequiresApi(CVersCode.V_16_41_JB)
 open class BaseInstallKBuilderSmartService : AccessibilityService(), IUtilK {
 //    private var _handledMap: MutableMap<Int, Boolean?> = HashMap()
 
