@@ -47,7 +47,7 @@ object InstallKSplitsAckpine : BaseUtilK() {
             UtilKLogWrapper.d(TAG, "install: dont has permission")
             return
         }
-        val name = uri.getDisplayName(_context.contentResolver)
+        val name = uri.getDisplayName()
         val apks = getApksFromUri(uri, name)
         UtilKLogWrapper.d(TAG, "install: name $name apks $apks")
         installPackage(apks, name, coroutineScope, listener)
