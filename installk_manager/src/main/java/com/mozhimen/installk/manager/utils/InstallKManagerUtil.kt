@@ -3,6 +3,8 @@ package com.mozhimen.installk.manager.utils
 import android.content.pm.PackageInfo
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackageInfo
 import com.mozhimen.installk.manager.mos.PackageBundle
+import com.mozhimen.kotlin.utilk.android.content.UtilKPackageInfoWrapper
+import com.mozhimen.kotlin.utilk.android.content.gainVersionCode
 
 /**
  * @ClassName InstallKManagerUtil
@@ -19,5 +21,5 @@ fun PackageInfo.packageInfo2packageBundle(): PackageBundle =
 object InstallKManagerUtil {
     @JvmStatic
     fun packageInfo2packageBundle(packageInfo: PackageInfo): PackageBundle =
-        PackageBundle(packageInfo.packageName, UtilKPackageInfo.getVersionCode(packageInfo))
+        PackageBundle(packageInfo.packageName, packageInfo.gainVersionCode())
 }

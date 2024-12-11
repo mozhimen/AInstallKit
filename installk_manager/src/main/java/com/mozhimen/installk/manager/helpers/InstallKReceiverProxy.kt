@@ -11,10 +11,10 @@ import com.mozhimen.kotlin.lintk.optins.OApiInit_ByLazy
 import com.mozhimen.kotlin.lintk.optins.OApiInit_InApplication
 import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
-import com.mozhimen.kotlin.utilk.android.content.getVersionCode
 import com.mozhimen.kotlin.utilk.wrapper.UtilKSysRom
 import com.mozhimen.installk.manager.commons.IInstallKReceiverProxy
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
+import com.mozhimen.kotlin.utilk.android.content.gainVersionCode
 import com.mozhimen.stackk.basic.commons.IStackKListener
 import com.mozhimen.stackk.callback.StackKCb
 import java.util.concurrent.CopyOnWriteArrayList
@@ -77,7 +77,7 @@ class InstallKReceiverProxy(
                 if (UtilKPackage.hasPackage(packageName, 0)) {
                     val packageInfo = UtilKPackage.getPackageInfo(_context.packageName, 0)
                     if (packageInfo != null) {
-                        _iPackagesChangeListener.onPackageAddOrReplace(packageInfo.packageName, packageInfo.getVersionCode())
+                        _iPackagesChangeListener.onPackageAddOrReplace(packageInfo.packageName, packageInfo.gainVersionCode())
                     } else {
                         _iPackagesChangeListener.onPackageAddOrReplace(packageName, -1)
                     }

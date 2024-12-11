@@ -6,9 +6,9 @@ import com.mozhimen.kotlin.elemk.android.content.bases.BaseBroadcastReceiver
 import com.mozhimen.kotlin.elemk.android.content.cons.CIntent
 import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
-import com.mozhimen.kotlin.utilk.android.content.getVersionCode
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
+import com.mozhimen.kotlin.utilk.android.content.gainVersionCode
 
 /**
  * @ClassName InstallKReceiver
@@ -39,7 +39,7 @@ class InstallKReceiver(private val _iPackagesChangeListener: IPackagesChangeList
                             if (packageInfo != null) {
                                 UtilKLogWrapper.d(TAG, "onReceive: packageInfo != null")
 
-                                _iPackagesChangeListener.onPackageAddOrReplace(packageInfo.packageName, packageInfo.getVersionCode())
+                                _iPackagesChangeListener.onPackageAddOrReplace(packageInfo.packageName, packageInfo.gainVersionCode())
                             } else {
                                 UtilKLogWrapper.e(TAG, "onReceive: cant find packageInfo just now")
 
