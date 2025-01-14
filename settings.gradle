@@ -26,11 +26,11 @@ include ':installk_builder_test'
 include ':installk_xapk'
 include ':installk_splits_ackpine'
 include ':installk_splits_ackpine_test'
-//SwiftKit
-include ':SwiftKit'
-project(':SwiftKit').projectDir = new File("D:\\WorkSpace\\GitHub\\SwiftKit")
-include ':SwiftKit:basick'
-include ':SwiftKit:xmlk'
+//ASwiftKit
+include ':ASwiftKit'
+project(':ASwiftKit').projectDir = new File("D:\\WorkSpace\\GitHub\\ASwiftKit")
+include ':ASwiftKit:basick'
+include ':ASwiftKit:xmlk'
 //AIOKit
 include ':AIOKit'
 project(':AIOKit').projectDir = new File("D:\\WorkSpace\\GitHub\\AIOKit")
