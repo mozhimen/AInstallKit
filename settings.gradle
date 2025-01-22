@@ -20,22 +20,60 @@ dependencyResolutionManagement {
 
 rootProject.name = "AInstallKit"
 include ':app'
-include ':installk_manager'
-include ':installk_builder'
-include ':installk_builder_test'
-include ':installk_xapk'
-include ':installk_splits_ackpine'
-include ':installk_splits_ackpine_test'
+include ':manager'
+include ':builder'
+include ':builder:test'
+include ':xapk'
+include ':xapk:test'
+include ':splits_ackpine'
+include ':splits_ackpine:test'
+//ALibKit_Jetbrains
+include ':ALibKit_Jetbrains'
+project(':ALibKit_Jetbrains').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetbrains")
+include ':ALibKit_Jetbrains:kotlin_stdlib'
+include ':ALibKit_Jetbrains:kotlinx_coroutines'
+//ALibKit_Jetpack
+include ':ALibKit_Jetpack'
+project(':ALibKit_Jetpack').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetpack")
+include ':ALibKit_Jetpack:startup'
+include ':ALibKit_Jetpack:room'
+include ':ALibKit_Jetpack:concurrent_futures'
+include ':ALibKit_Jetpack:annotation'
+include ':ALibKit_Jetpack:core'
+include ':ALibKit_Jetpack:databinding'
+//ALibKit_Android
+include ':ALibKit_Android'
+project(':ALibKit_Android').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Android")
+include ':ALibKit_Android:tools_build_apksig'
+//ALibKit_Apache
+include ':ALibKit_Apache'
+project(':ALibKit_Apache').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Apache")
+include ':ALibKit_Apache:commons_compress'
+//ALibKit_Google
+include ':ALibKit_Google'
+project(':ALibKit_Google').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Google")
+include ':ALibKit_Google:guava:listenablefuture'
+include ':ALibKit_Google:material'
+//KUtilKit
+include ':KUtilKit'
+project(':KUtilKit').projectDir = new File("D:\\WorkSpace\\GitHub\\KUtilKit")
+include ':KUtilKit:android'
+include ':KUtilKit:kotlin'
 //ASwiftKit
 include ':ASwiftKit'
 project(':ASwiftKit').projectDir = new File("D:\\WorkSpace\\GitHub\\ASwiftKit")
 include ':ASwiftKit:basick'
 include ':ASwiftKit:xmlk'
+include ':ASwiftKit:bindk'
+//AStackKit
+include ':AStackKit'
+project(':AStackKit').projectDir = new File("D:\\WorkSpace\\GitHub\\AStackKit")
+include ':AStackKit:basic'
+include ':AStackKit:callback'
 //AIOKit
 include ':AIOKit'
 project(':AIOKit').projectDir = new File("D:\\WorkSpace\\GitHub\\AIOKit")
-include ':AIOKit:iok_ztzip'
-include ':installk_xapk_test'
+include ':AIOKit:ztzip'
 //ANetKit_okdownload
 include ':ANetKit_okdownload'
 project(':ANetKit_okdownload').projectDir = new File("D:\\WorkSpace\\GitHub\\ANetKit_okdownload")
@@ -52,8 +90,7 @@ include ':AInstallKit_Ackpine:ackpine-splits'
 include ':AInstallKit_Ackpine:ackpine-ktx'
 include ':AInstallKit_Ackpine:ackpine-core'
 include ':AInstallKit_Ackpine:ackpine-runtime'
-//ALibKit_Jetpack
-include ':ALibKit_Jetpack'
-project(':ALibKit_Jetpack').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetpack")
-include ':ALibKit_Jetpack:startup'
-include ':ALibKit_Jetpack:room'
+//AZipKit
+include ':AZipKit'
+project(':AZipKit').projectDir = new File("D:\\WorkSpace\\GitHub\\AZipKit")
+include ':AZipKit:ztzip'
