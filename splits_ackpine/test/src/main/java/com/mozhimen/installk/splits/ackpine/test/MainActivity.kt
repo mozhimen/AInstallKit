@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
-import com.mozhimen.bindk.bases.activity.viewbinding.BaseActivityVBVM
+import com.mozhimen.uik.databinding.bases.activity.viewbinding.BaseActivityVBVM
 import com.mozhimen.kotlin.elemk.commons.I_Listener
 import com.mozhimen.kotlin.lintk.optins.permission.OPermission_MANAGE_EXTERNAL_STORAGE
 import com.mozhimen.kotlin.lintk.optins.permission.OPermission_POST_NOTIFICATIONS
