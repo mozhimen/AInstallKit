@@ -6,15 +6,17 @@ import android.content.IntentFilter
 import androidx.lifecycle.LifecycleOwner
 import com.mozhimen.basick.bases.BaseBroadcastReceiverProxy2
 import com.mozhimen.kotlin.elemk.android.content.cons.CIntent
-import com.mozhimen.kotlin.lintk.optins.OApiCall_BindLifecycle
-import com.mozhimen.kotlin.lintk.optins.OApiInit_ByLazy
-import com.mozhimen.kotlin.lintk.optins.OApiInit_InApplication
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
+import com.mozhimen.kotlin.lintk.optins.api.OApiCall_BindLifecycle
+import com.mozhimen.kotlin.lintk.optins.api.OApiInit_ByLazy
+import com.mozhimen.kotlin.lintk.optins.api.OApiInit_InApplication
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_QUERY_ALL_PACKAGES
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
 import com.mozhimen.kotlin.utilk.wrapper.UtilKSysRom
 import com.mozhimen.installk.manager.commons.IInstallKReceiverProxy
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
+import com.mozhimen.kotlin.utilk.android.app.UtilKApplicationWrapper
 import com.mozhimen.kotlin.utilk.android.content.gainVersionCode
+import com.mozhimen.kotlin.utilk.kotlin.UtilKLazyJVM.lazy_ofNone
 import com.mozhimen.stackk.basic.commons.IStackKListener
 import com.mozhimen.stackk.callback.StackKCb
 import java.util.concurrent.CopyOnWriteArrayList
@@ -41,6 +43,7 @@ class InstallKReceiverProxy(
     arrayOf(CIntent.ACTION_PACKAGE_ADDED, CIntent.ACTION_PACKAGE_REPLACED, CIntent.ACTION_PACKAGE_REMOVED)
 ), IStackKListener, IInstallKReceiverProxy {
     private var _packageNames: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
+    protected val _context by lazy_ofNone { UtilKApplicationWrapper.instance.applicationContext }
 
     override fun addPackageName(packageName: String) {
         if (!_packageNames.contains(packageName)) {
@@ -68,7 +71,7 @@ class InstallKReceiverProxy(
         super.onDestroy(owner)
     }
 
-    @OptIn(OPermission_QUERY_ALL_PACKAGES::class)
+    @OptIn(OUsesPermission_QUERY_ALL_PACKAGES::class)
     override fun onChanged(isFront: Boolean, activity: Activity) {
         if (isFront && _packageNames.isNotEmpty()) {
             val iterator = _packageNames.iterator()

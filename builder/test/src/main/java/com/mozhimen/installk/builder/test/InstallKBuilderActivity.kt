@@ -3,11 +3,7 @@ package com.mozhimen.installk.builder.test
 import android.os.Bundle
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import androidx.lifecycle.lifecycleScope
-import com.mozhimen.uik.databinding.bases.activity.databinding.BaseActivityVDB
-import com.mozhimen.kotlin.lintk.optins.ODeviceRoot
 import com.mozhimen.kotlin.elemk.android.cons.CPermission
-import com.mozhimen.manifestk.permission.ManifestKPermission
-import com.mozhimen.manifestk.permission.annors.APermissionCheck
 import com.mozhimen.kotlin.utilk.android.app.UtilKActivityStart
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
 import com.mozhimen.kotlin.utilk.android.widget.showToast
@@ -17,10 +13,13 @@ import com.mozhimen.kotlin.utilk.kotlin.UtilKStrFile
 import com.mozhimen.kotlin.utilk.kotlin.UtilKStrPath
 import com.mozhimen.kotlin.utilk.wrapper.UtilKAppInstall
 import com.mozhimen.installk.builder.InstallKBuilder
-import com.mozhimen.installk.builder.commons.IInstallKStateListener
-import com.mozhimen.installk.builder.cons.EInstallKMode
-import com.mozhimen.installk.builder.cons.EInstallKPermissionType
+import com.mozhimen.installk.builder.basic.commons.IInstallKStateListener
+import com.mozhimen.installk.builder.basic.cons.EInstallKType
 import com.mozhimen.installk.builder.test.databinding.ActivityInstallkBinding
+import com.mozhimen.kotlin.lintk.annors.AManifestRequire
+import com.mozhimen.kotlin.lintk.optins.device.ODeviceRoot
+import com.mozhimen.permissionk.PermissionK
+import com.mozhimen.uik.databinding.bases.viewdatabinding.activity.BaseActivityVDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,12 +32,6 @@ import kotlinx.coroutines.launch
  * @Date 2023/1/12 14:02
  * @Version 1.0
  */
-@APermissionCheck(
-    CPermission.READ_EXTERNAL_STORAGE,
-    CPermission.WRITE_EXTERNAL_STORAGE,
-    CPermission.INTERNET,
-    CPermission.READ_INSTALL_SESSIONS,
-)
 class InstallKBuilderActivity : BaseActivityVDB<ActivityInstallkBinding>() {
     private val _strPathNameApk by lazy_ofNone { UtilKStrPath.Absolute.Internal.getFiles() + "/installk/componentktest.apk" }
     @OptIn(ODeviceRoot::class)
@@ -46,14 +39,14 @@ class InstallKBuilderActivity : BaseActivityVDB<ActivityInstallkBinding>() {
 
     @OptIn(ODeviceRoot::class)
     override fun initView(savedInstanceState: Bundle?) {
-        vdb.installkTxt.text = UtilKPackage.getVersionCode().toString()
+        vdb.installkTxt.text = UtilKPackage.getVersionCode(0).toString()
         vdb.installkBtn.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 if (!UtilKStrFile.isFileExist(_strPathNameApk)) {
-                    UtilKStrAsset.strAssetName2file("componentktest.apk", _strPathNameApk, false)
+                    UtilKStrAsset.strAssetName2file_use("componentktest.apk", _strPathNameApk, false)
                 }
                 delay(500)
-                _installK.setInstallMode(EInstallKMode.ROOT).setInstallSmartService(InstallKBuilderService::class.java).setInstallSilenceReceiver(InstallKBuilderReceiver::class.java)
+                _installK.setInstallType(EInstallKType.ROOT).setAccessibilityService(InstallKBuilderAccessibilityService::class.java).setInstallSilenceReceiver(InstallKBuilderReceiver::class.java)
                     .setInstallStateChangeListener(object : IInstallKStateListener {
                         override fun onInstallStart() {
                             UtilKLogWrapper.d(TAG, "onInstallStart:")
@@ -67,25 +60,13 @@ class InstallKBuilderActivity : BaseActivityVDB<ActivityInstallkBinding>() {
                             UtilKLogWrapper.e(TAG, "onInstallFail: ${msg ?: ""}")
                         }
 
-                        override fun onNeedPermissions(type: EInstallKPermissionType) {
-                            UtilKLogWrapper.w(TAG, "onNeedPermissions: $type")
-                            when (type) {
-                                EInstallKPermissionType.COMMON -> {
-                                    ManifestKPermission.requestPermissions(this@InstallKBuilderActivity, onSuccess = { "权限申请成功".showToast() })
-                                }
-
-                                EInstallKPermissionType.INSTALL -> {
-                                    UtilKAppInstall.startManageUnknownInstallSource(this@InstallKBuilderActivity)
-                                }
-
-                                EInstallKPermissionType.ACCESSIBILITY -> {
-                                    UtilKActivityStart.startSettingAccessibilitySettings(this@InstallKBuilderActivity)
-                                }
-
-                                else -> {}
-                            }
+                        override fun onRequirePermissions(permissions: Array<String>) {
+                            UtilKLogWrapper.w(TAG, "onNeedPermissions: $permissions")
+                            PermissionK.requestPermissions(this@InstallKBuilderActivity,permissions, onResult = {
+                                if (it)
+                                    "权限申请成功".showToast()
+                            })
                         }
-
                     }).install(_strPathNameApk)
             }
         }

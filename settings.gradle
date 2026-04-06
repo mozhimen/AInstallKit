@@ -18,15 +18,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AInstallKit"
-include ':app'
-include ':manager'
-include ':builder'
-include ':builder:test'
-include ':xapk'
-include ':xapk:test'
-include ':splits_ackpine'
-include ':splits_ackpine:test'
+
 //ALibKit_Jetbrains
 include ':ALibKit_Jetbrains'
 project(':ALibKit_Jetbrains').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetbrains")
@@ -62,6 +54,7 @@ include ':KUtilKit:kotlin'
 //ASwiftKit
 include ':ASwiftKit'
 project(':ASwiftKit').projectDir = new File("D:\\WorkSpace\\GitHub\\ASwiftKit")
+include ':ASwiftKit:servicek'
 include ':ASwiftKit:basick'
 include ':ASwiftKit:xmlk'
 include ':ASwiftKit:uik:databinding'
@@ -78,11 +71,15 @@ include ':AIOKit:ztzip'
 include ':ANetKit_okdownload'
 project(':ANetKit_okdownload').projectDir = new File("D:\\WorkSpace\\GitHub\\ANetKit_okdownload")
 include ':ANetKit_okdownload:okdownload'
-//AManifestKit_XXPermissions
-include ':AManifestKit_XXPermissions'
-project(':AManifestKit_XXPermissions').projectDir = new File("D:\\WorkSpace\\GitHub\\AManifestKit_XXPermissions")
-include ':AManifestKit_XXPermissions:manifestk_xxpermissions'
-include ':AManifestKit_XXPermissions:library'
+//APermissionKit_XXPermissions
+include ':APermissionKit_XXPermissions'
+project(':APermissionKit_XXPermissions').projectDir = new File("D:\\WorkSpace\\GitHub\\APermissionKit_XXPermissions")
+include ':APermissionKit_XXPermissions:permissionk_xxpermissions'
+include ':APermissionKit_XXPermissions:library'
+//APermissionKit
+include ':APermissionKit'
+project(':APermissionKit').projectDir = new File("D:\\WorkSpace\\GitHub\\APermissionKit")
+include ':APermissionKit:permissionk'
 //AInstallKit_Ackpine
 include ':AInstallKit_Ackpine'
 project(':AInstallKit_Ackpine').projectDir = new File("D:\\WorkSpace\\GitHub\\AInstallKit_Ackpine")
@@ -94,3 +91,18 @@ include ':AInstallKit_Ackpine:ackpine-runtime'
 include ':AZipKit'
 project(':AZipKit').projectDir = new File("D:\\WorkSpace\\GitHub\\AZipKit")
 include ':AZipKit:ztzip'
+rootProject.name = "AInstallKit"
+include ':app'
+include ':manager'
+include ':builder'
+include ':builder:test'
+include ':xapk'
+include ':xapk:test'
+include ':splits_ackpine'
+include ':splits_ackpine:test'
+include ':builder:auto'
+include ':builder:basic'
+include ':builder:root'
+include ':builder:silence'
+include ':builder:smart'
+include ':builder:hand'

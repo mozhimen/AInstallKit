@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.mozhimen.uik.databinding.bases.viewbinding.activity.BaseActivityVB
 import com.mozhimen.kotlin.elemk.android.app.cons.CPendingIntent
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_REQUEST_INSTALL_PACKAGES
 import com.mozhimen.kotlin.utilk.android.app.applyResult_ofOK
 import com.mozhimen.kotlin.utilk.android.app.applyResult_ofCANCELED
 import com.mozhimen.kotlin.utilk.android.content.UtilKIntent
@@ -38,7 +38,7 @@ class InstallKXapkActivity : BaseActivityVB<ActivityInstallBinding>() {
     }
     private val _packageInstallerSession: PackageInstaller.Session by lazy { UtilKPackageInstaller.getSession(this.applicationContext.packageManager.packageInstaller) }
 
-    @OptIn(OPermission_REQUEST_INSTALL_PACKAGES::class)
+    @OptIn(OUsesPermission_REQUEST_INSTALL_PACKAGES::class)
     override fun initView(savedInstanceState: Bundle?) {
         if (!_strApkPathNames.isNullOrEmpty()) {
             //        if (isMeizu() || isVivo()) {
@@ -99,7 +99,7 @@ class InstallKXapkActivity : BaseActivityVB<ActivityInstallBinding>() {
         }
     }
 
-//    @OptIn(OPermission_REQUEST_INSTALL_PACKAGES::class)
+//    @OptIn(OUsesPermission_REQUEST_INSTALL_PACKAGES::class)
 //    override fun onDestroy() {
 //        UtilKPackageInstallerSession.abandon_close(_packageInstallerSession)
 //        super.onDestroy()

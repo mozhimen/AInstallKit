@@ -3,8 +3,8 @@ package com.mozhimen.installk.xapk.utils
 import android.annotation.SuppressLint
 import android.os.Environment
 import androidx.annotation.RequiresPermission
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_MANAGE_EXTERNAL_STORAGE
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_WRITE_EXTERNAL_STORAGE
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_MANAGE_EXTERNAL_STORAGE
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_WRITE_EXTERNAL_STORAGE
 import com.mozhimen.kotlin.elemk.android.cons.CPermission
 import com.mozhimen.kotlin.utilk.android.os.UtilKEnvironment
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
@@ -32,8 +32,8 @@ import java.io.File
 object InstallKXapkUtil : IUtilK {
     @SuppressLint("InlinedApi")
     @JvmStatic
-    @OPermission_WRITE_EXTERNAL_STORAGE
-    @OPermission_MANAGE_EXTERNAL_STORAGE
+    @OUsesPermission_WRITE_EXTERNAL_STORAGE
+    @OUsesPermission_MANAGE_EXTERNAL_STORAGE
     @RequiresPermission(allOf = [CPermission.MANAGE_EXTERNAL_STORAGE, CPermission.WRITE_EXTERNAL_STORAGE])
     fun createXapkInstaller(strFilePathNameXapk: String): BaseXapkInstaller? {
         if (strFilePathNameXapk.isEmpty()){
@@ -98,8 +98,8 @@ object InstallKXapkUtil : IUtilK {
     }
 
     @SuppressLint("InlinedApi")
-    @OPermission_WRITE_EXTERNAL_STORAGE
-    @OPermission_MANAGE_EXTERNAL_STORAGE
+    @OUsesPermission_WRITE_EXTERNAL_STORAGE
+    @OUsesPermission_MANAGE_EXTERNAL_STORAGE
     @RequiresPermission(allOf = [CPermission.MANAGE_EXTERNAL_STORAGE, CPermission.WRITE_EXTERNAL_STORAGE])
     private fun createFolder_ofObb(): String {
         val strFolderPathObb: String = if (UtilKEnvironment.isExternalStorageStateMounted()) {

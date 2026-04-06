@@ -9,24 +9,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
-import com.mozhimen.uik.databinding.bases.activity.viewbinding.BaseActivityVBVM
 import com.mozhimen.kotlin.elemk.commons.I_Listener
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_MANAGE_EXTERNAL_STORAGE
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_POST_NOTIFICATIONS
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_READ_EXTERNAL_STORAGE
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_WRITE_EXTERNAL_STORAGE
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_MANAGE_EXTERNAL_STORAGE
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_POST_NOTIFICATIONS
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_READ_EXTERNAL_STORAGE
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_REQUEST_INSTALL_PACKAGES
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_WRITE_EXTERNAL_STORAGE
 import com.mozhimen.kotlin.utilk.android.net.getDisplayName
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.kotlin.utilk.kotlin.UtilKStrPath
 import com.mozhimen.kotlin.utilk.kotlin.isFileNotExist
-import com.mozhimen.kotlin.utilk.kotlin.strAssetName2file
 import com.mozhimen.kotlin.utilk.kotlin.strFilePath2uri
 import com.mozhimen.installk.splits.ackpine.InstallKSplitsAckpine
 import com.mozhimen.installk.splits.ackpine.test.databinding.ActivityMainBinding
-import com.mozhimen.manifestk.xxpermissions.XXPermissionsCheckUtil
-import com.mozhimen.manifestk.xxpermissions.XXPermissionsNavHostUtil
-import com.mozhimen.manifestk.xxpermissions.XXPermissionsRequestUtil
+import com.mozhimen.kotlin.utilk.kotlin.strAssetName2file_use
+import com.mozhimen.permissionk.xxpermissions.XXPermissionsCheckUtil
+import com.mozhimen.permissionk.xxpermissions.XXPermissionsNavHostUtil
+import com.mozhimen.permissionk.xxpermissions.XXPermissionsRequestUtil
+import com.mozhimen.uik.databinding.bases.viewbinding.activity.BaseActivityVBVM
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -53,14 +53,14 @@ class MainActivity : BaseActivityVBVM<ActivityMainBinding, MainViewModel>() {
     }
 
     @SuppressLint("MissingPermission")
-    @OptIn(OPermission_WRITE_EXTERNAL_STORAGE::class, OPermission_MANAGE_EXTERNAL_STORAGE::class, OPermission_POST_NOTIFICATIONS::class)
+    @OptIn(OUsesPermission_WRITE_EXTERNAL_STORAGE::class, OUsesPermission_MANAGE_EXTERNAL_STORAGE::class, OUsesPermission_POST_NOTIFICATIONS::class)
     override fun initView(savedInstanceState: Bundle?) {
         vb.installTv.setOnClickListener {
             applyPermissionInstall(this) {
                 applyPermissionStorage(this) {
                     applyPermissionNotification(this) {
                         if (_strXApkPathName.isFileNotExist()) {
-                            "test.xapk".strAssetName2file(_strXApkPathName)
+                            "test.xapk".strAssetName2file_use(_strXApkPathName)
                         }
                         InstallKSplitsAckpine.install(_strXApkPathName.strFilePath2uri() ?: kotlin.run {
                             UtilKLogWrapper.d(TAG, "initView: _strXApkPathName uri is null")
@@ -88,10 +88,10 @@ class MainActivity : BaseActivityVBVM<ActivityMainBinding, MainViewModel>() {
         }
     }
 
-    @OPermission_WRITE_EXTERNAL_STORAGE
-    @OPermission_MANAGE_EXTERNAL_STORAGE
+    @OUsesPermission_WRITE_EXTERNAL_STORAGE
+    @OUsesPermission_MANAGE_EXTERNAL_STORAGE
     private fun install(uri: Uri) {
-        val name = uri.getDisplayName(contentResolver)
+        val name = uri.getDisplayName()
         val apks = getApksFromUri(uri, name)
         UtilKLogWrapper.d(TAG, "install: name $name apks $apks")
         installPackage(apks, name)
@@ -144,43 +144,43 @@ class MainActivity : BaseActivityVBVM<ActivityMainBinding, MainViewModel>() {
             emptyList()
         }
 
-    @OptIn(OPermission_REQUEST_INSTALL_PACKAGES::class)
+    @OptIn(OUsesPermission_REQUEST_INSTALL_PACKAGES::class)
     private fun applyPermissionInstall(context: Context, onGranted: I_Listener) {
-        if (XXPermissionsCheckUtil.hasInstallPermission(context)) {
+        if (XXPermissionsCheckUtil.hasPermission_REQUEST_INSTALL_PACKAGES(context)) {
             onGranted.invoke()
         } else {
-            XXPermissionsRequestUtil.requestInstallPermission(context, {
+            XXPermissionsRequestUtil.requestPermission_REQUEST_INSTALL_PACKAGES(context, {
                 onGranted.invoke()
             }, {
-                XXPermissionsNavHostUtil.startSettingInstall(context)
+                XXPermissionsNavHostUtil.startPermission_REQUEST_INSTALL_PACKAGES(context)
             })
         }
     }
 
-    @OptIn(OPermission_READ_EXTERNAL_STORAGE::class, OPermission_WRITE_EXTERNAL_STORAGE::class, OPermission_MANAGE_EXTERNAL_STORAGE::class)
+    @OptIn(OUsesPermission_READ_EXTERNAL_STORAGE::class, OUsesPermission_WRITE_EXTERNAL_STORAGE::class, OUsesPermission_MANAGE_EXTERNAL_STORAGE::class)
     @SuppressLint("MissingPermission")
     private fun applyPermissionStorage(context: Context, onGranted: I_Listener) {
-        if (XXPermissionsCheckUtil.hasReadWritePermission(context)) {
+        if (XXPermissionsCheckUtil.hasPermission_EXTERNAL_STORAGE(context)) {
             onGranted.invoke()
         } else {
-            XXPermissionsRequestUtil.requestReadWritePermission(context, {
+            XXPermissionsRequestUtil.requestPermission_EXTERNAL_STORAGE(context, {
                 onGranted.invoke()
             }, {
-                XXPermissionsNavHostUtil.startSettingManageStorage(context)
+                XXPermissionsNavHostUtil.startPermission_EXTERNAL_STORAGE(context)
             })
         }
     }
 
     @SuppressLint("MissingPermission")
-    @OptIn(OPermission_POST_NOTIFICATIONS::class)
+    @OptIn(OUsesPermission_POST_NOTIFICATIONS::class)
     private fun applyPermissionNotification(context: Context, onGranted: I_Listener) {
-        if (XXPermissionsCheckUtil.hasPostNotificationPermission(context)) {
+        if (XXPermissionsCheckUtil.hasPermission_POST_NOTIFICATIONS(context)) {
             onGranted.invoke()
         } else {
-            XXPermissionsRequestUtil.requestNotificationPermission(context, {
+            XXPermissionsRequestUtil.requestPermission_POST_NOTIFICATIONS(context, {
                 onGranted.invoke()
             }, {
-                XXPermissionsNavHostUtil.startSettingNotification(context)
+                XXPermissionsNavHostUtil.startPermission_POST_NOTIFICATIONS(context)
             })
         }
     }

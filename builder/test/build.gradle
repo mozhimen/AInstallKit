@@ -34,12 +34,18 @@ android {
     buildFeatures {
         dataBinding true
     }
+    lintOptions{
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 
 dependencies {
 
     implementation project(':ASwiftKit:basick')
+    implementation project(':ASwiftKit:uik:databinding')
     implementation project(':ASwiftKit:xmlk')
+    implementation project(':APermissionKit:permissionk')
     implementation project(':builder')
 
     testImplementation 'junit:junit:4.13.2'

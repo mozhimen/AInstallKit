@@ -1,21 +1,21 @@
 package com.mozhimen.installk.manager
 
-import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.mozhimen.kotlin.lintk.optins.OApiCall_BindLifecycle
-import com.mozhimen.kotlin.lintk.optins.OApiInit_ByLazy
+import com.mozhimen.kotlin.lintk.optins.api.OApiCall_BindLifecycle
+import com.mozhimen.kotlin.lintk.optins.api.OApiInit_ByLazy
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
-import com.mozhimen.kotlin.lintk.optins.OApiInit_InApplication
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_QUERY_ALL_PACKAGES
+import com.mozhimen.kotlin.lintk.optins.api.OApiInit_InApplication
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_QUERY_ALL_PACKAGES
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackage
 import com.mozhimen.kotlin.utilk.android.content.UtilKPackageInfo
-import com.mozhimen.kotlin.utilk.bases.BaseUtilK
 import com.mozhimen.installk.manager.commons.IPackagesChangeListener
 import com.mozhimen.installk.manager.helpers.InstallKReceiverProxy
 import com.mozhimen.installk.manager.mos.PackageBundle
 import com.mozhimen.installk.manager.utils.packageInfo2packageBundle
 import com.mozhimen.kotlin.utilk.android.content.gainVersionCode
+import com.mozhimen.kotlin.utilk.bases.BaseUtilK
+import com.mozhimen.kotlin.utilk.commons.IUtilK
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @Version 1.0
  */
 @OApiInit_InApplication
-object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
+object InstallKManager :BaseUtilK()/*, LifecycleOwner*/ {
 
     private val _installedPackageBundles = ConcurrentHashMap<String, PackageBundle>()//用来保存包的信息
     private val _packagesChangeListeners = mutableListOf<IPackagesChangeListener>()
@@ -45,8 +45,8 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
 
     /////////////////////////////////////////////////////////////////////////
 
-    @OptIn(OPermission_QUERY_ALL_PACKAGES::class, OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
-    fun init(context: Context) {
+    @OptIn(OUsesPermission_QUERY_ALL_PACKAGES::class, OApiCall_BindLifecycle::class, OApiInit_ByLazy::class)
+    fun init() {
         //注册
         _installKReceiverProxy.bindLifecycle(ProcessLifecycleOwner.get())
         //填充数据
@@ -127,7 +127,7 @@ object InstallKManager : BaseUtilK()/*, LifecycleOwner*/ {
             packageBundle.versionCode = versionCode
             _installedPackageBundles[packageName] = packageBundle
         } else {
-            UtilKPackageInfo.get(_context, packageName, 0)?.let {
+            UtilKPackageInfo.get(packageName, 0)?.let {
                 UtilKLogWrapper.d(TAG, "onPackageAdded: packageName add packageName $packageName versionCode $versionCode")
                 _installedPackageBundles[packageName] = it.packageInfo2packageBundle()
             } ?: run {

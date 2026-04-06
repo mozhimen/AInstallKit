@@ -1,29 +1,16 @@
 package com.mozhimen.installk.builder
 
-import android.os.*
-import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
-import com.mozhimen.kotlin.elemk.android.os.cons.CVersCode
-import com.mozhimen.kotlin.lintk.optins.ODeviceRoot
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_INSTALL_PACKAGES
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_READ_EXTERNAL_STORAGE
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
-import com.mozhimen.kotlin.utilk.bases.BaseUtilK
-import com.mozhimen.kotlin.utilk.android.content.UtilKApplicationInfo
-import com.mozhimen.kotlin.utilk.android.os.UtilKBuildVersion
-import com.mozhimen.kotlin.utilk.android.util.e
+import android.Manifest
+import androidx.annotation.RequiresPermission
+import com.mozhimen.installk.builder.auto.InstallKBuilderAuto
+import com.mozhimen.installk.builder.basic.bases.BaseInstallKBuilder
+import com.mozhimen.installk.builder.basic.cons.EInstallKType
+import com.mozhimen.installk.builder.hand.InstallKBuilderHand
+import com.mozhimen.installk.builder.root.InstallKBuilderRoot
+import com.mozhimen.installk.builder.silence.InstallKBuilderSilence
+import com.mozhimen.installk.builder.smart.InstallKBuilderSmart
+import com.mozhimen.kotlin.lintk.optins.device.ODeviceRoot
 import com.mozhimen.kotlin.utilk.kotlin.isFileExist
-import com.mozhimen.kotlin.utilk.wrapper.UtilKApp
-import com.mozhimen.kotlin.utilk.wrapper.UtilKAppInstall
-import com.mozhimen.kotlin.utilk.wrapper.UtilKPermission
-import com.mozhimen.kotlin.utilk.wrapper.UtilKSys
-import com.mozhimen.installk.builder.commons.IInstallKBuilder
-import com.mozhimen.installk.builder.commons.IInstallKStateListener
-import com.mozhimen.installk.builder.cons.CInstallKCons
-import com.mozhimen.installk.builder.cons.EInstallKMode
-import com.mozhimen.installk.builder.cons.EInstallKPermissionType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.*
 
 /**
  * @ClassName InstallKBuilder
@@ -32,189 +19,67 @@ import java.io.*
  * @Date 2023/1/7 0:04
  * @Version 1.0
  */
-@ODeviceRoot
-class InstallKBuilder : IInstallKBuilder, BaseUtilK() {
+class InstallKBuilder : BaseInstallKBuilder() {
 
-    private var _installMode = EInstallKMode.AUTO
-    private var _installStateChangeListener: IInstallKStateListener? = null
-    private var _smartServiceClazz: Class<*>? = null
+    private var _installType = EInstallKType.SMART
+    private var _accessibilityServiceClazz: Class<*>? = null
     private var _silenceReceiverClazz: Class<*>? = null
-    private val _handler = object : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            when (msg.what) {
-                CInstallKCons.MSG_DOWNLOAD_START -> _installStateChangeListener?.onDownloadStart()
-                CInstallKCons.MSG_INSTALL_START -> _installStateChangeListener?.onInstallStart()
-                CInstallKCons.MSG_INSTALL_FINISH -> _installStateChangeListener?.onInstallFinish()
-                CInstallKCons.MSG_INSTALL_FAIL -> _installStateChangeListener?.onInstallFail(msg.obj as String)
-                CInstallKCons.MSG_NEED_PERMISSION -> _installStateChangeListener?.onNeedPermissions(msg.obj as EInstallKPermissionType)
-            }
-        }
+
+    fun setAccessibilityService(serviceClazz: Class<*>): InstallKBuilder {
+        _accessibilityServiceClazz = serviceClazz
+        return this
     }
 
-    /**
-     * 设置安装
-     * @param receiverClazz Class<*>
-     * @return InstallK
-     */
-    override fun setInstallSilenceReceiver(receiverClazz: Class<*>): InstallKBuilder {
+    fun setInstallSilenceReceiver(receiverClazz: Class<*>): InstallKBuilder {
         _silenceReceiverClazz = receiverClazz
         return this
     }
 
-    /**
-     * 设置监听器
-     * @param listener IInstallStateChangedListener
-     */
-    override fun setInstallStateChangeListener(listener: IInstallKStateListener): InstallKBuilder {
-        _installStateChangeListener = listener
+    fun setInstallType(type: EInstallKType): InstallKBuilder {
+        _installType = type
         return this
     }
 
-    /**
-     * 设置安装模式
-     * @param mode EInstallMode
-     * @return InstallK
-     */
-    override fun setInstallMode(mode: EInstallKMode): InstallKBuilder {
-        _installMode = mode
-        return this
-    }
-
-    /**
-     * 设置智能安装服务
-     * @param serviceClazz Class<*>
-     * @return InstallK
-     */
-    override fun setInstallSmartService(serviceClazz: Class<*>): InstallKBuilder {
-        _smartServiceClazz = serviceClazz
-        return this
-    }
-
-    /**
-     * 安装
-     * @param strPathNameApk String
-     */
-    suspend fun install(strPathNameApk: String) {
-        withContext(Dispatchers.Main) {
-            try {
-                _handler.sendEmptyMessage(CInstallKCons.MSG_INSTALL_START)
-                installByMode(strPathNameApk)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                UtilKLogWrapper.e(TAG, "install: ${e.message}")
-                e.message?.e(TAG)
-                _handler.sendMessage(Message().apply {
-                    what = CInstallKCons.MSG_INSTALL_FAIL
-                    obj = e.message ?: ""
-                })
-            } finally {
-                _handler.sendEmptyMessage(CInstallKCons.MSG_INSTALL_FINISH)
-            }
-        }
-    }
-
-    @OptIn(OPermission_READ_EXTERNAL_STORAGE::class, OPermission_REQUEST_INSTALL_PACKAGES::class, OPermission_INSTALL_PACKAGES::class)
-    @Throws(Exception::class)
-    private fun installByMode(strPathNameApk: String) {
+    @RequiresPermission(allOf = [Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE])
+    @OptIn(ODeviceRoot::class)
+    override fun tryInstall(strPathNameApk: String): Boolean {
         require(strPathNameApk.isNotEmpty() && strPathNameApk.endsWith(".apk")) { "$TAG $strPathNameApk not a correct apk file path" }
         require(strPathNameApk.isFileExist()) { "$TAG $strPathNameApk is not exist" }
-        if (!UtilKPermission.isSelfGranted(CInstallKCons.PERMISSIONS)) {
-            UtilKLogWrapper.w(TAG, "installByMode: onNeedPermissions PERMISSIONS")
-            _handler.sendMessage(Message().apply {
-                what = CInstallKCons.MSG_NEED_PERMISSION
-                obj = EInstallKPermissionType.COMMON
-            })
-            return
-        }
-        val targetSdkVersion = UtilKApplicationInfo.getTargetSdkVersion(_context)
-        if (targetSdkVersion >= CVersCode.V_26_8_O && UtilKBuildVersion.isAfterV_26_8_O() && !UtilKAppInstall.hasRequestInstallPackages()) {        // 允许安装应用
-            UtilKLogWrapper.w(TAG, "installByMode: onNeedPermissions isAppInstallsPermissionEnable false")
-            _handler.sendMessage(Message().apply {
-                what = CInstallKCons.MSG_NEED_PERMISSION
-                obj = EInstallKPermissionType.INSTALL
-            })
-            return
-        }
 
-        when (_installMode) {
-            EInstallKMode.AUTO -> {
-                //try install root
-                if (UtilKSys.isRoot() && UtilKAppInstall.install_ofRuntime(strPathNameApk)) {
-                    UtilKLogWrapper.d(TAG, "installByMode: AUTO as ROOT success")
-                    return
-                }
-                //try install silence
-                if (_silenceReceiverClazz != null && (UtilKSys.isRoot() || !UtilKApp.isUserApp(_context))) {
-                    UtilKAppInstall.install_ofSilence(strPathNameApk, _silenceReceiverClazz!!)
-                    UtilKLogWrapper.d(TAG, "installByMode: AUTO as SILENCE success")
-                    return
-                }
-                //try install smart
-                if (_smartServiceClazz != null && UtilKPermission.hasAccessibility(_smartServiceClazz!!)) {
-                    UtilKAppInstall.install_ofView(strPathNameApk)
-                    UtilKLogWrapper.d(TAG, "installByMode: AUTO as SMART success")
-                    return
-                }
-                //try install hand
-                UtilKAppInstall.install_ofView(strPathNameApk)
+        when (_installType) {
+            EInstallKType.SMART -> {
+                return InstallKBuilderSmart()
+                    .setInstallSilenceReceiver(_silenceReceiverClazz)
+                    .setAccessibilityService(_accessibilityServiceClazz)
+                    .setInstallStateChangeListener(_iInstallStateChangeListener)
+                    .tryInstall(strPathNameApk)
             }
 
-            EInstallKMode.ROOT -> {
-                require(UtilKSys.isRoot()) { "$TAG this device has not root" }
-                UtilKAppInstall.install_ofRuntime(strPathNameApk)
-                UtilKLogWrapper.d(TAG, "installByMode: ROOT success")
+            EInstallKType.ROOT -> {
+                return InstallKBuilderRoot()
+                    .setInstallStateChangeListener(_iInstallStateChangeListener)
+                    .tryInstall(strPathNameApk)
             }
 
-            EInstallKMode.SILENCE -> {
-                requireNotNull(_silenceReceiverClazz) { "$TAG silence receiver must not be null" }
-                require(UtilKSys.isRoot() || !UtilKApp.isUserApp(_context)) { "$TAG this device has not root or its system app" }
-                UtilKAppInstall.install_ofSilence(strPathNameApk, _silenceReceiverClazz!!)
-                UtilKLogWrapper.d(TAG, "installByMode: SILENCE success")
+            EInstallKType.SILENCE -> {
+                return InstallKBuilderSilence()
+                    .setInstallSilenceReceiver(_silenceReceiverClazz)
+                    .setInstallStateChangeListener(_iInstallStateChangeListener)
+                    .tryInstall(strPathNameApk)
             }
 
-            EInstallKMode.SMART -> {
-                requireNotNull(_smartServiceClazz) { "$TAG smart service must not be null" }
-                if (!UtilKPermission.hasAccessibility(_smartServiceClazz!!)) {
-                    UtilKLogWrapper.w(TAG, "installByMode: SMART isAccessibilityPermissionEnable false")
-                    _handler.sendMessage(Message().apply {
-                        what = CInstallKCons.MSG_NEED_PERMISSION
-                        obj = EInstallKPermissionType.ACCESSIBILITY
-                    })
-                    return
-                }
-                UtilKAppInstall.install_ofView(strPathNameApk)
-                UtilKLogWrapper.d(TAG, "installByMode: SMART success")
+            EInstallKType.AUTO -> {
+                return InstallKBuilderAuto()
+                    .setAccessibilityService(_accessibilityServiceClazz)
+                    .setInstallStateChangeListener(_iInstallStateChangeListener)
+                    .tryInstall(strPathNameApk)
             }
 
-            EInstallKMode.HAND -> {
-                UtilKAppInstall.install_ofView(strPathNameApk)
-                UtilKLogWrapper.d(TAG, "installByMode: HAND success")
+            EInstallKType.HAND ->{
+                return InstallKBuilderHand()
+                    .setInstallStateChangeListener(_iInstallStateChangeListener)
+                    .tryInstall(strPathNameApk)
             }
         }
     }
-
-//    /**
-//     * 下载并安装
-//     * @param apkUrl String
-//     */
-//    suspend fun downloadFromUrlAndInstall(apkUrl: String) {
-//        try {
-//            _handler.sendEmptyMessage(CCons.MSG_DOWNLOAD_START)
-//            var strPathNameApk: String
-//            withContext(Dispatchers.IO) {
-//                strPathNameApk = UtilKFileNet.downLoadFile(apkUrl, _tempStrPathNameApk)
-//            }
-//            installByMode(strPathNameApk)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            UtilKLogWrapper.e(TAG, "downloadFromUrlAndInstall: ${e.message}")
-//            _handler.sendMessage(Message().apply {
-//                what = CCons.MSG_INSTALL_FAIL
-//                obj = e.message ?: ""
-//            })
-//        } finally {
-//            _handler.sendEmptyMessage(CCons.MSG_INSTALL_FINISH)
-//        }
-//    }
 }

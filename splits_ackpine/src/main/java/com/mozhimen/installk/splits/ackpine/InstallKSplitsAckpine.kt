@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.lifecycleScope
 import com.mozhimen.kotlin.elemk.commons.IA_Listener
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_POST_NOTIFICATIONS
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_POST_NOTIFICATIONS
 import com.mozhimen.kotlin.elemk.android.cons.CPermission
 import com.mozhimen.kotlin.utilk.android.net.getDisplayName
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
@@ -12,6 +12,7 @@ import com.mozhimen.kotlin.utilk.bases.BaseUtilK
 import com.mozhimen.kotlin.utilk.wrapper.UtilKPermission
 import com.mozhimen.installk.splits.ackpine.cons.SInstallState
 import com.mozhimen.installk.splits.ackpine.utils.toUrisList
+import com.mozhimen.kotlin.utilk.commons.IUtilK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,7 +41,7 @@ import ru.solrudev.ackpine.session.progress
  */
 object InstallKSplitsAckpine : BaseUtilK() {
     @JvmStatic
-    @OPermission_POST_NOTIFICATIONS
+    @OUsesPermission_POST_NOTIFICATIONS
     @RequiresPermission(CPermission.POST_NOTIFICATIONS)
     fun install(uri: Uri, coroutineScope: CoroutineScope, listener: IA_Listener<SInstallState>? = null) {
         if (!UtilKPermission.hasPostNotification()) {

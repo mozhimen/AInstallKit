@@ -32,6 +32,12 @@ android {
 
 dependencies {
     implementation project(':KUtilKit:android')
+    api project(':builder:auto')
+    api project(':builder:basic')
+    api project(':builder:root')
+    api project(':builder:silence')
+    api project(':builder:smart')
+    api project(':builder:hand')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

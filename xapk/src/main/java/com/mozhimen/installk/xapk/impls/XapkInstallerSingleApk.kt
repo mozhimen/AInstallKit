@@ -1,7 +1,7 @@
 package com.mozhimen.installk.xapk.impls
 
 import android.content.Context
-import com.mozhimen.kotlin.lintk.optins.permission.OPermission_REQUEST_INSTALL_PACKAGES
+import com.mozhimen.kotlin.lintk.optins.manifest.uses_permission.OUsesPermission_REQUEST_INSTALL_PACKAGES
 import com.mozhimen.kotlin.utilk.android.util.UtilKLogWrapper
 import com.mozhimen.kotlin.utilk.wrapper.UtilKAppInstall
 import com.mozhimen.installk.xapk.bases.BaseXapkInstaller
@@ -15,7 +15,7 @@ import java.io.File
  */
 class XapkInstallerSingleApk(xapkPath: String, xapkUnzipOutputDir: File) : BaseXapkInstaller(xapkPath, xapkUnzipOutputDir) {
 
-    @OptIn(OPermission_REQUEST_INSTALL_PACKAGES::class)
+    @OptIn(OUsesPermission_REQUEST_INSTALL_PACKAGES::class)
     override fun install(xapkPath: String, context: Context) {
         val files: Array<File>? = xapkUnzipOutputDir.listFiles()
 
