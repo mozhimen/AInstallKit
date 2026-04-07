@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    implementation project(':KUtilKit:android')
+    implementation 'com.github.mozhimen.KUtilKit:android:0.0.2'
 
     api project(project.path.replace(project.name,'')+':basic')
     api project(project.path.replace(project.name,'')+':root')

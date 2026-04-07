@@ -33,10 +33,6 @@ include ':ALibKit_Jetpack:concurrent_futures'
 include ':ALibKit_Jetpack:annotation'
 include ':ALibKit_Jetpack:core'
 include ':ALibKit_Jetpack:databinding'
-//ALibKit_Android
-include ':ALibKit_Android'
-project(':ALibKit_Android').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Android")
-include ':ALibKit_Android:tools_build_apksig'
 //ALibKit_Apache
 include ':ALibKit_Apache'
 project(':ALibKit_Apache').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Apache")
