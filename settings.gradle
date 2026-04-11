@@ -24,15 +24,6 @@ include ':ALibKit_Jetbrains'
 project(':ALibKit_Jetbrains').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetbrains")
 include ':ALibKit_Jetbrains:kotlin_stdlib'
 include ':ALibKit_Jetbrains:kotlinx_coroutines'
-//ALibKit_Jetpack
-include ':ALibKit_Jetpack'
-project(':ALibKit_Jetpack').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Jetpack")
-include ':ALibKit_Jetpack:startup'
-include ':ALibKit_Jetpack:room'
-include ':ALibKit_Jetpack:concurrent_futures'
-include ':ALibKit_Jetpack:annotation'
-include ':ALibKit_Jetpack:core'
-include ':ALibKit_Jetpack:databinding'
 //ALibKit_Apache
 include ':ALibKit_Apache'
 project(':ALibKit_Apache').projectDir = new File("D:\\WorkSpace\\GitHub\\ALibKit_Apache")

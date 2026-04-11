@@ -42,9 +42,9 @@ android {
 
 dependencies {
 
-    implementation project(':ASwiftKit:basick')
-    implementation project(':ASwiftKit:uik:databinding')
-    implementation project(':ASwiftKit:xmlk')
+    implementation 'com.github.mozhimen.ASwiftKit:basick:2.0.4'
+    implementation 'com.github.mozhimen.ASwiftKit:uik-databinding:2.0.4'
+    implementation 'com.github.mozhimen.ASwiftKit:xmlk:2.0.4'
     implementation project(':APermissionKit:permissionk')
     implementation project(':builder')
 
