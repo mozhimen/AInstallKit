@@ -32,12 +32,12 @@ android {
 
 dependencies {
     implementation 'com.github.mozhimen.KUtilKit:android:0.0.3'
-    api project(':builder:auto')
-    api project(':builder:basic')
-    api project(':builder:root')
-    api project(':builder:silence')
-    api project(':builder:smart')
-    api project(':builder:hand')
+    api project(':builder-auto')
+    api project(':builder-basic')
+    api project(':builder-root')
+    api project(':builder-silence')
+    api project(':builder-smart')
+    api project(':builder-hand')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

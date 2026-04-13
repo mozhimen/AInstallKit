@@ -32,8 +32,8 @@ android {
 dependencies {
 //    api "ru.solrudev.ackpine:ackpine-splits:0.6.1"
 //    api "ru.solrudev.ackpine:ackpine-ktx:0.6.1"
-    api project(':AInstallKit_Ackpine:ackpine-splits')
-    api project(':AInstallKit_Ackpine:ackpine-ktx')
+    api "ru.solrudev.ackpine:ackpine-splits:0.6.1"
+    api "ru.solrudev.ackpine:ackpine-ktx:0.6.1"
     implementation 'com.github.mozhimen.KUtilKit:android:0.0.3'
 
     testImplementation 'junit:junit:4.13.2'

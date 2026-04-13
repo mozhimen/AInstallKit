@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.mozhimen.installk.builder.hand'
+    namespace 'com.mozhimen.installk.builder.basic'
     compileSdk 35
 
     defaultConfig {
@@ -34,8 +34,7 @@ android {
 
 dependencies {
     implementation 'com.github.mozhimen.KUtilKit:android:0.0.3'
-
-    api project(project.path.replace(project.name,'')+':basic')
+    implementation 'com.github.mozhimen.APermissionKit:permissionk:0.0.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

@@ -4,12 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.mozhimen.installk.builder.silence'
+    namespace 'com.mozhimen.installk.builder.smart'
     compileSdk 35
 
     defaultConfig {
         minSdk 19
-        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,16 +25,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    lintOptions{
-        checkReleaseBuilds false
-        abortOnError false
-    }
 }
 
 dependencies {
     implementation 'com.github.mozhimen.KUtilKit:android:0.0.3'
-
-    api project(project.path.replace(project.name,'')+':basic')
+    api project(project.path.replace(project.name,'')+':builder-basic')
+    api project(project.path.replace(project.name,'')+':builder-root')
+    api project(project.path.replace(project.name,'')+':builder-silence')
+    api project(project.path.replace(project.name,'')+':builder-hand')
+    api project(project.path.replace(project.name,'')+':builder-auto')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

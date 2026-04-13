@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.github.mozhimen.ASwiftKit:basick:2.1.6'
     implementation 'com.github.mozhimen.ASwiftKit:uik-databinding:2.1.6'
     implementation 'com.github.mozhimen.ASwiftKit:xmlk:2.1.6'
-    implementation project(':APermissionKit:permissionk')
+    implementation 'com.github.mozhimen.APermissionKit:permissionk:0.0.1'
     implementation project(':builder')
 
     testImplementation 'junit:junit:4.13.2'

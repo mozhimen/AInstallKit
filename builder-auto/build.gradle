@@ -35,8 +35,8 @@ android {
 dependencies {
     implementation 'com.github.mozhimen.KUtilKit:android:0.0.3'
     api 'com.github.mozhimen.ASwiftKit:servicek:2.1.6'
+    api project(project.path.replace(project.name,'')+':builder-basic')
 
-    api project(project.path.replace(project.name,'')+':basic')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
